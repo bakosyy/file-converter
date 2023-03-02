@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite App</title>
+</head>
+
+<body>
+  <div id="app">
+
+    <!-- Header -->
+    <header>
+      <nav class="py-2 px-4">
+        <div class="flex justify-between items-center relative z-20">
+          <!-- Logo -->
+          <div class="">
+            <a href="#">
+              <img src="./assets/images/logo.jpg" alt="website-logo" class="w-52 py-1.5">
+            </a>
+          </div>
+          <!-- Navbar toggler -->
+          <div>
+            <button id="navbar-toggler" class="border border-black border-opacity-10 py-1 px-3 cursor-pointer rounded">
+              <span class="block w-7 h-7 bg-navbar-toggler-icon bg-no-repeat bg-auto bg-center"></span>
+            </button>
+          </div>
+        </div>
+
+        <div id="navbar-toggle-menu" data-toggle="open" class="bg-gray-50 fixed -right-full top-[76px] w-full opacity-70 transition-[all] duration-300 ease-linear z-10">
+          <ul class="flex flex-col px-4 pb-2">
+            <li>
+              <a href="#" class="block text-gray-500 p-3">API</a>
+            </li>
+            <li>
+              <a href="#" class="block text-gray-500 p-3">Formats</a>
+            </li>
+            <li>
+              <a href="#" class="block text-gray-500 p-3">My files</a>
+            </li>
+            <li>
+              <a href="#" class="block text-gray-500 p-3">Help</a>
+            </li>
+            <li>
+              <a href="#" class="block text-gray-500 p-3">Log In</a>
+            </li>
+            <li>
+              <a href="#" class="block text-gray-500 p-3">Sign Up</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="bg-banner bg-repeat px-3 py-3 hidden">
+        <div>
+          <h1 class="text-3xl text-white text-center">File conversion made
+            <span class="block text-slate-800 font-bold">easy</span>
+          </h1>
+          <h2 class="text-white text-center mb-2 p-2">Convert documents, images, videos & sound - 1100+ formats supported</h2>
+        </div>
+
+        <div class="mt-4 px-2">
+          <div class="flex flex-col bg-white bg-opacity-20 rounded py-8 px-4">
+            <!-- Step 1 -->
+            <div id="step-1" class="flex flex-col items-center px-6">
+              <h6 class="text-white font-extralight mb-2">
+                Step 1 - Select a file(s) to convert
+              </h6>
+              <input type="file" class="hidden">
+              <div class="w-full">
+                <button class="w-full rounded text-xl text-[#262626] bg-[#9bf759] border border-[#5cd510] p-2">Choose Files</button>
+              </div>
+              <p class="text-white text-center pt-2">
+                <!-- Here should be svg -->
+                <a href="#" class="text-[80%] underline leading-none">How are my files protected?</a>
+              </p>
+            </div>
+
+            <!-- Step 2 -->
+            <div id="step-2" class="flex flex-col items-center opacity-50 hover:opacity-100 transition-opacity duration-500 ease-in-out my-12 px-6">
+              <h6 class="text-white font-extralight mb-2">
+                Step 2 - Convert your files to
+              </h6>
+              <select name="" id="" class="w-full rounded text-xl text-center text-[#616161] bg-[#e0e0e0] border border-[#cfcfcf] outline-none p-2">
+                <option value="">Convert to</option>
+                <option value="pdf">Pdf</option>
+              </select>
+            </div>
+
+            <!-- Step 3 -->
+            <div id="step-3" class="flex flex-col items-center opacity-50 hover:opacity-100 transition-opacity duration-500 ease-in-out px-6">
+              <h6 class="text-white font-extralight mb-2">
+                Step 3 - Start converting
+              </h6>
+              <input type="file" class="hidden">
+              <div class="w-full">
+                <button class="w-full rounded text-xl text-[#616161] bg-[#e0e0e0] border border-[#cfcfcf] p-2">Convert now</button>
+              </div>
+              <p class="text-white text-center pt-1.5">
+                <!-- Here should be svg -->
+                <a href="#" class="text-[80%] leading-none">(And agree to our <span class="underline">Terms</span>)</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="about" class="py-8">
+
+      </section>
+    </main>
+
+  </div>
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>
