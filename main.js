@@ -1,2 +1,3 @@
 import "./src/css/style.css"
-import "./src/js/navbar-collapse.js"
+// import "./src/js/navbar-collapse"
+import "./src/js/collapsible"
