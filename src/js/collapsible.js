@@ -1,8 +1,9 @@
-let collapsibles = document.getElementsByClassName("collapsible")
+let collapsers = document.getElementsByClassName("collapser")
 
-Array.from(collapsibles).forEach((item) => {
+Array.from(collapsers).forEach((item) => {
   item.addEventListener("click", function () {
-    let content = this.nextElementSibling
+    let collapseParent = item.closest(".collapseParent")
+    let content = collapseParent.querySelector(".collapsible")
 
     if (content.style.maxHeight) {
       content.style.maxHeight = null
@@ -11,3 +12,15 @@ Array.from(collapsibles).forEach((item) => {
     }
   })
 })
+
+// Array.from(collapsibles).forEach((item) => {
+//   item.addEventListener("click", function () {
+//     let content = this.nextElementSibling
+
+//     if (content.style.maxHeight) {
+//       content.style.maxHeight = null
+//     } else {
+//       content.style.maxHeight = content.scrollHeight + "px"
+//     }
+//   })
+// })

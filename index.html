@@ -14,7 +14,7 @@
     <!-- Header -->
     <header>
       <nav class="md:absolute md:top-0 md:inset-x-0 z-50 md:p-2">
-        <div class="max-w-screen-x-xs md:max-w-screen-sm m-auto md:bg-white md:rounded-lg md:mt-6 py-2 px-2">
+        <div class="collapseParent max-w-screen-x-xs md:max-w-screen-sm m-auto md:bg-white md:rounded-lg md:mt-6 py-2 px-2">
           <div class="flex justify-between items-center relative z-20 px-2">
             <!-- Logo -->
             <div class="">
@@ -24,7 +24,7 @@
             </div>
             <!-- Collapse toggler -->
             <div class="flex flex-row-reverse items-center">
-              <button id="navbar-toggler" class="border border-black border-opacity-10 py-1 px-3 cursor-pointer rounded">
+              <button class="collapser border border-black border-opacity-10 py-1 px-3 cursor-pointer rounded">
                 <span class="block w-7 h-7 bg-navbar-toggler-icon bg-no-repeat bg-auto bg-center"></span>
               </button>
               <!-- md menu toggle -->
@@ -37,31 +37,30 @@
                 </li>
               </ul>
             </div>
-            <!-- Collapsible content -->
-            <div id="navbar-toggle-menu" data-toggle="open" class="bg-gray-50 fixed -right-full top-[76px] w-full opacity-70 transition-[all] duration-300 ease-linear z-10">
-              <ul class="flex flex-col px-4 pb-2">
-                <li>
-                  <a href="#" class="block text-gray-500 p-3">API</a>
-                </li>
-                <li>
-                  <a href="#" class="block text-gray-500 p-3">Formats</a>
-                </li>
-                <li>
-                  <a href="#" class="block text-gray-500 p-3">My files</a>
-                </li>
-                <li>
-                  <a href="#" class="block text-gray-500 p-3">Help</a>
-                </li>
-                <li>
-                  <a href="#" class="block text-gray-500 p-3">Log In</a>
-                </li>
-                <li>
-                  <a href="#" class="block text-gray-500 p-3">Sign Up</a>
-                </li>
-              </ul>
-            </div>
           </div>
 
+          <div class="collapsible  bg-gray-50 duration-200 ease-out">
+            <ul class="flex flex-col px-4 pb-2">
+              <li>
+                <a href="#" class="block text-gray-500 p-3">API</a>
+              </li>
+              <li>
+                <a href="#" class="block text-gray-500 p-3">Formats</a>
+              </li>
+              <li>
+                <a href="#" class="block text-gray-500 p-3">My files</a>
+              </li>
+              <li>
+                <a href="#" class="block text-gray-500 p-3">Help</a>
+              </li>
+              <li>
+                <a href="#" class="block text-gray-500 p-3">Log In</a>
+              </li>
+              <li>
+                <a href="#" class="block text-gray-500 p-3">Sign Up</a>
+              </li>
+            </ul>
+          </div>
 
         </div>
       </nav>
