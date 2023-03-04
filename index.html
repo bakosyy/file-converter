@@ -78,8 +78,8 @@
     </header>
 
     <main class="pt-20 md:pt-0">
-      <!-- Banner section -->
       <section class="bg-banner md:bg-banner-splash bg-repeat md:bg-[repeat:no_repeat,repeat] md:bg-[position:center_top,left_top] px-3 py-3">
+        <!-- Banner -->
         <div class="max-w-screen-x-xs md:max-w-screen-sm m-auto md:mt-[120px]">
           <h1 class="text-[32px] md:text-[56px] leading-10 md:leading-none text-white text-center md:mb-2 px-4">File conversion made
             <span class="text-slate-800 font-bold">easy</span>
@@ -87,8 +87,10 @@
           <h2 class="leading-5 text-white text-center mb-2 p-2">Convert documents, images, videos & sound - 1100+ formats supported</h2>
         </div>
 
-        <div class="max-w-screen-x-xs md:max-w-screen-sm m-auto mt-4 md:mt-60 px-2">
+        <!-- Uploader -->
+        <div class="max-w-screen-x-xs md:max-w-screen-sm 2x-md:max-w-[960px] m-auto mt-4 md:mt-60 px-2">
           <div class="relative flex flex-col w-full md:flex-row bg-white bg-opacity-20 rounded py-8 px-4 mb-2">
+            <!-- Progress bar -->
             <div class="hidden md:block absolute top-12 left-32 right-0 progress-bar w-[62.5%]">
               <span style="width: 50%"></span>
               <div class="absolute inset-x-0 top-0 w-full h-3 bg-[#5cd510]"></div>
@@ -100,11 +102,20 @@
               </h6>
               <div class="hidden md:block relative w-11 h-11 mb-8">
                 <div class="absolute inset-0 animate-ping-slow bg-[#6de324] rounded-full"></div>
-                <div class="hidden md:flex absolute inset-0 z-10 items-center justify-center text-white text-[28px] font-medium bg-[#4db70b] rounded-full shadow-rounded">✓</div>
+                <div class="hidden md:flex absolute inset-0 z-10 items-center justify-center text-white text-[28px] font-medium bg-[#4db70b] rounded-full shadow-rounded">1</div>
+                <!-- ✓ -->
               </div>
               <input type="file" class="hidden">
               <div class="w-full">
-                <button class="w-full rounded text-xl md:text-base text-[#262626] bg-[#9bf759] border border-[#5cd510] p-2">Choose Files</button>
+                <button class="flex items-center justify-center w-full rounded text-xl md:text-base text-[#262626] bg-[#9bf759] border border-[#5cd510] p-2">
+                  <span class="hidden 2x-md:inline-block w-6 h-6 mr-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-cloud-upload" fill="#1e5403">
+                      <path class="primary" d="M18 14.97c0-.76-.3-1.51-.88-2.1l-3-3a3 3 0 0 0-4.24 0l-3 3A3 3 0 0 0 6 15a4 4 0 0 1-.99-7.88 5.5 5.5 0 0 1 10.86-.82A4.49 4.49 0 0 1 22 10.5a4.5 4.5 0 0 1-4 4.47z"></path>
+                      <path class="secondary" d="M11 14.41V21a1 1 0 0 0 2 0v-6.59l1.3 1.3a1 1 0 0 0 1.4-1.42l-3-3a1 1 0 0 0-1.4 0l-3 3a1 1 0 0 0 1.4 1.42l1.3-1.3z"></path>
+                    </svg>
+                  </span>
+                  Choose Files
+                </button>
               </div>
               <p class="text-[80%] text-white text-center pt-2">
                 <span class="hidden md:block mb-1">
@@ -224,7 +235,6 @@
           </div>
         </div>
       </section>
-
     </main>
 
   </div>

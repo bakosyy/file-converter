@@ -1,27 +1,22 @@
-const header = document.querySelector("header")
+const nav = document.querySelector("header nav")
+const navChild = nav.querySelector("div")
 
-const onHeaderScroll = () => {
-  if (window.scrollY > 50) {
-    makeWhite()
-  } else {
-    makeTransparent()
-  }
+const onScroll = () => {
+  window.scrollY > 31 ? makeFixed() : makeAbsolute()
 }
 
-const makeWhite = () => {
-  header.classList.add("bg-white", "border-b", "border-[#e4e4e4]")
+const makeFixed = () => {
+  nav.classList.remove("md:absolute")
+  nav.classList.remove("md:p-2")
+  nav.classList.remove("md:bg-transparent")
+  navChild.classList.remove("md:mt-6")
 }
 
-const makeTransparent = () => {
-  header.classList.remove("bg-white", "border-b", "border-[#e4e4e4]")
+const makeAbsolute = () => {
+  nav.classList.add("md:absolute")
+  nav.classList.add("md:p-2")
+  nav.classList.add("md:bg-transparent")
+  navChild.classList.add("md:mt-6")
 }
 
-/**
- * Making header white if window.scrollY is more than 50.
- * It can happen when we scroll the page and refresh the page.
- */
-if (window.scrollY > 50) {
-  makeWhite()
-}
-
-window.addEventListener("scroll", onHeaderScroll)
+window.addEventListener("scroll", onScroll)
