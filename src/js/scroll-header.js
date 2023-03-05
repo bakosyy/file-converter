@@ -19,4 +19,6 @@ const makeAbsolute = () => {
   navChild.classList.add("md:mt-6")
 }
 
+document.onload = dispatchEvent(new Event("scroll"))
+
 window.addEventListener("scroll", onScroll)

@@ -13,7 +13,7 @@ module.exports = {
         "ping-slow": "ping 1.5s linear 0.5s infinite"
       },
       boxShadow: {
-        rounded: "0 0 0 3px #f7f7f7"
+        "white-rounded": "0 0 0 3px #f7f7f7"
       }
     },
     screens: {
