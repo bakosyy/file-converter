@@ -1,8 +1,10 @@
 const init = () => {
+  /* Selectors */
   const dropzoneWrapper = document.querySelector(".dropzoneWrapper")
   const dropzone = document.querySelector(".dropzone")
   const uploadBlock = document.querySelector(".uploader")
   const uploadInput = document.querySelector(".uploadInput")
+  const uploadInputText = document.querySelector(".uploadInputText")
   const uploadOptions = document.querySelector(".uploadOptions")
   const triggerBtn = document.querySelector(".uploadInputTrigger")
   const stepOne = document.getElementById("step-1")
@@ -10,18 +12,24 @@ const init = () => {
   const stepThree = document.getElementById("step-3")
   const progress = document.querySelector(".progress-bar span")
 
+  /* Variables */
+  let validatedFiles
+  const selectTypes = ["pdf"]
+
+  /* Helper functions */
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1)
   }
 
+  /* Listeners */
   const onChange = (e) => {
     // onChange for input[type=file]
     if (e.target === uploadInput) {
-      let validatedFiles = handleFilesValidation(e.target.files)
+      validatedFiles = handleFilesValidation(e.target.files)
 
       if (validatedFiles) {
-        activateStepOne(validatedFiles)
-        activateStepTwo(validatedFiles)
+        activateStepOne()
+        activateStepTwo()
       }
     }
 
@@ -61,6 +69,7 @@ const init = () => {
     }
   }
 
+  /* Implementation functions */
   const isValidFile = (file) => {
     return file.size > 0
   }
@@ -90,16 +99,17 @@ const init = () => {
         )
   }
 
-  const activateStepPings = (step) => {
+  const deactivateStepPings = (step) => {
     let roundElement = step.querySelector(".roundElement")
     let pingElement = roundElement.previousElementSibling
 
-    roundElement.classList.add("shadow-white-rounded")
-    roundElement.innerText = "✓"
     pingElement.classList.remove("animate-ping-slow")
+    roundElement.classList.add("shadow-white-rounded")
+
+    roundElement.innerText = "✓"
   }
 
-  const deactivateStepPings = (step) => {
+  const activateStepPings = (step) => {
     let roundElement = step.querySelector(".roundElement")
     let pingElement = roundElement.previousElementSibling
 
@@ -115,29 +125,24 @@ const init = () => {
     }
   }
 
-  const activateStepOne = (files) => {
-    activateStepPings(stepOne)
+  const activateStepOne = () => {
+    deactivateStepPings(stepOne)
     progress.style.width = "50%"
   }
 
   const deactivateStepOne = () => {
     deactivateStepPings(stepOne)
-    // let roundElement = stepOne.querySelector(".roundElement")
-    // let pingElement = roundElement.previousElementSibling
-    // pingElement.classList.add("animate-ping-slow")
-    // roundElement.classList.remove("shadow-white-rounded")
-    // roundElement.innerText = "1"
     progress.style.width = "0%"
   }
 
-  const activateStepTwo = (files) => {
+  const activateStepTwo = () => {
     stepTwo.classList.remove("opacity-50")
     let roundElement = stepTwo.querySelector(".roundElement")
     let pingElement = roundElement.previousElementSibling
     roundElement.classList.remove("shadow-white-rounded")
     pingElement.classList.add("animate-ping-slow")
 
-    if (isWordDocument(files)) {
+    if (isWordDocument(validatedFiles)) {
       let convertOptions = ["pdf"]
 
       uploadOptions.length = 1
@@ -151,21 +156,72 @@ const init = () => {
     }
   }
 
-  const activateStepThree = () => {}
+  const deactivateStepTwo = () => {
+    console.log(123)
+  }
 
+  const activateStepThree = () => {
+    console.log(123)
+  }
+
+  const deactivateStepThree = () => {
+    console.log(123)
+  }
+
+  /* Events */
   document.addEventListener("drop", onDrop)
   document.addEventListener("dragover", onDragOver)
-
   triggerBtn.addEventListener("click", onClick)
   uploadInput.addEventListener("change", onChange)
   uploadOptions.addEventListener("change", onChange)
-
   uploadBlock.addEventListener("dragenter", onDragEnter)
   dropzoneWrapper.addEventListener("dragleave", onDragLeave)
   dropzoneWrapper.addEventListener("dragover", onDragOver)
   dropzoneWrapper.addEventListener("drop", onDrop)
 }
 
+/* Initialize */
 if ("draggable" in document.createElement("div")) {
   init()
 }
+
+// if (currentStep == 1)
+
+// uploadInput onchange if validatedFiles
+// => step 1: remove pinging
+// => step 1: add rounded
+// => step 1: set text to '✓'
+// => step 1: set progress.width to '50%'
+// => step 2: remove opacity-50
+// => step 2: add pinging
+// => step 2: remove rounded
+// => step 2: set text to data-id
+// => step 2: update select types
+// => step 3: add opacity-50
+// else
+// => step 1: add pinging
+// => step 1: remove rounded
+// => step 1: set text to data-id
+// => step 1: set progress.width to '50%'
+// => step 2: add opacity-50
+// => step 2: remove pinging
+// => step 2: add rounded
+// => step 2: set text to data-id
+// => step 2: select all select types
+// => step 3: add opacity-50
+
+// uploadOptions onchange if validatedFiles && uploadOptions.value
+// => step 2: add rounded
+// => step 2: set text to '✓'
+// => step 2: remove pinging
+// => step 2: set progress.width to '100%'
+// => step 3: remove opacity-50
+// else
+// => step 2: remove rounded
+// => step 2: add pinging
+// => step 2: set text to data-id
+// => step 2: set progress.width to '50%'
+// => step 3: add opacity-50
+
+// convert btn onclick
+// => ...
