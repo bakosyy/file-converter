@@ -9,7 +9,7 @@
 </head>
 
 <body>
-  <div id="app" class="relative">
+  <div id="app" class="relative" data-scrolled="">
 
     <!-- Header -->
     <header>
@@ -104,18 +104,18 @@
                 Step 1 - Select a file(s) to convert
               </h6>
               <div class="hidden md:block relative w-11 h-11 mb-8">
-                <div class="absolute inset-0 animate-ping-slow bg-[#6de324] rounded-full"></div>
+                <div class="pingElement absolute inset-0 animate-ping-slow bg-[#6de324] rounded-full"></div>
                 <div class="roundElement hidden md:flex absolute inset-0 z-10 items-center justify-center text-white text-[28px] font-medium bg-[#4db70b] rounded-full">1</div>
               </div>
               <div class="w-full">
-                <button class="uploadInputTrigger flex items-center justify-center w-full rounded text-xl md:text-base text-[#262626] bg-[#9bf759] border border-[#5cd510] p-2">
+                <button class="uploadInputTrigger flex items-center justify-center w-full rounded md:text-base text-[#262626] bg-[#9bf759] hover:bg-[#5cd510] border border-[#5cd510] p-2">
                   <span class="hidden 2x-md:inline-block w-6 h-6 mr-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-cloud-upload" fill="#1e5403">
                       <path class="primary" d="M18 14.97c0-.76-.3-1.51-.88-2.1l-3-3a3 3 0 0 0-4.24 0l-3 3A3 3 0 0 0 6 15a4 4 0 0 1-.99-7.88 5.5 5.5 0 0 1 10.86-.82A4.49 4.49 0 0 1 22 10.5a4.5 4.5 0 0 1-4 4.47z"></path>
                       <path class="secondary" d="M11 14.41V21a1 1 0 0 0 2 0v-6.59l1.3 1.3a1 1 0 0 0 1.4-1.42l-3-3a1 1 0 0 0-1.4 0l-3 3a1 1 0 0 0 1.4 1.42l1.3-1.3z"></path>
                     </svg>
                   </span>
-                  <span class="uploadInputText">Choose Files</span>
+                  <span class="uploadInputText x-lg:text-xl">Choose File</span>
                 </button>
                 <input type="file" name="uploadFile" class="uploadInput hidden">
               </div>
@@ -139,12 +139,13 @@
                 Step 2 - Convert your files to
               </h6>
               <div class="hidden md:block relative w-11 h-11 mb-8">
-                <div class="absolute inset-0 bg-[#6de324] rounded-full"></div>
+                <div class="pingElement absolute inset-0 bg-[#6de324] rounded-full"></div>
                 <div class="roundElement hidden md:flex absolute inset-0 z-10 items-center justify-center text-white text-[28px] font-medium bg-[#4db70b] rounded-full shadow-white-rounded">2</div>
               </div>
-              <select name="uploadOptions" class="uploadOptions w-full rounded text-xl md:text-base text-center text-[#616161] bg-[#e0e0e0] border border-[#cfcfcf] outline-none p-2 md:px-5">
-                <option value="">Convert to</option>
-                <option value="pdf">Pdf</option>
+              <select name="uploadOptions" class="uploadOptions w-full rounded x-lg:text-xl md:text-base text-center text-[#616161] bg-[#e0e0e0] border border-[#cfcfcf] outline-none p-2 md:px-5">
+                <option value="" class="text-left">Convert to</option>
+                <option value="pdf" class="text-left">Pdf</option>
+                <option value="mp3" class="text-left">Mp3</option>
               </select>
             </div>
 
@@ -154,12 +155,12 @@
                 Step 3 - Start converting
               </h6>
               <div class="hidden md:block relative w-11 h-11 mb-8">
-                <div class="absolute inset-0 bg-[#6de324] rounded-full"></div>
+                <div class="pingElement absolute inset-0 bg-[#6de324] rounded-full"></div>
                 <div class="roundElement hidden md:flex absolute inset-0 z-10 items-center justify-center text-white text-[28px] font-medium bg-[#4db70b] rounded-full shadow-white-rounded">3</div>
               </div>
               <input type="file" class="hidden">
               <div class="w-full">
-                <button class="w-full rounded text-xl md:text-base text-[#616161] bg-[#e0e0e0] border border-[#cfcfcf] p-2">Convert now</button>
+                <button class="w-full rounded x-lg:text-xl md:text-base text-[#616161] bg-[#e0e0e0] border border-[#cfcfcf] p-2">Convert now</button>
               </div>
               <p class="text-white text-center pt-1.5">
                 <!-- Here should be svg -->
