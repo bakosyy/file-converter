@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ["./index.html", "./*.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       backgroundImage: {
@@ -10,10 +10,17 @@ module.exports = {
           'url("./assets/images/banner-splash.png"),url("./assets/images/banner-grid.webp")'
       },
       animation: {
-        "ping-slow": "ping 1.5s linear 0.5s infinite"
+        "ping-slow": "ping 1.5s linear 0.5s infinite",
+        "ping-scale": "customScale 2s linear 0.5s infinite"
       },
       boxShadow: {
         "white-rounded": "0 0 0 3px #f7f7f7"
+      },
+      keyframes: {
+        customScale: {
+          "50%": { transform: "scale(1.03, 1.35)", opacity: "0.4" },
+          "100%": { transform: "scale(1.04, 1.45)", opacity: "0.1" }
+        }
       }
     },
     screens: {

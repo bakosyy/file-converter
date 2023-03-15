@@ -17,9 +17,8 @@ const init = () => {
   const stepThreePing = stepThree.querySelector(".pingElement")
   const stepThreeRound = stepThree.querySelector(".roundElement")
   const progress = document.querySelector(".progress-bar span")
-  const appScrolled = document.getElementById("app").dataset.scrolled
 
-  /* Variables */
+  /* State */
   let validatedFiles
   const selectTypes = ["pdf", "mp3"]
 
@@ -33,17 +32,10 @@ const init = () => {
     // onChange for input[type=file]
     if (e.target === uploadInput) {
       resetAllSteps()
-
       validatedFiles = handleFilesValidation(e.target.files)
-
       if (validatedFiles) {
         completeStepOne()
         activateStepTwo()
-      }
-
-      if (!appScrolled) {
-        console.log(uploadBlock.getBoundingClientRect())
-        console.log("window scrollY" + window.scrollY)
       }
     }
 
@@ -84,6 +76,30 @@ const init = () => {
     }
   }
 
+  const scrollToStep = (e) => {
+    // Defining client browser width
+    let width = window.innerWidth
+    let stepTwoBounding = stepTwo.getBoundingClientRect()
+    let stepThreeBounding = stepThree.getBoundingClientRect()
+    let uploaderBounding = uploadBlock.getBoundingClientRect()
+
+    // If file input was changed
+    if (e.target === uploadInput && validatedFiles) {
+      if (width <= 768) {
+        window.scrollTo({ top: stepTwoBounding.top - 77 - 15 + window.scrollY })
+      } else {
+        window.scrollTo({
+          top: uploaderBounding.top - 77 - 15 + window.scrollY
+        })
+      }
+    }
+
+    // If select options were changed
+    if (e.target === uploadOptions && validatedFiles && width <= 768) {
+      window.scrollTo({ top: stepThreeBounding.top - 77 - 15 + window.scrollY })
+    }
+  }
+
   /* Implementation functions */
   const isValidFile = (file) => {
     return file.size > 0
@@ -119,12 +135,18 @@ const init = () => {
     stepOnePing.classList.remove("animate-ping-slow")
     stepOneRound.classList.add("shadow-white-rounded")
     stepOneRound.innerText = "✓"
+
+    triggerBtn.classList.replace("bg-[#9bf759]", "bg-[#e0e0e0]")
+    triggerBtn.classList.replace("border-[#5cd510]", "border-[#cfcfcf]")
+    triggerBtn.classList.replace("hover:bg-[#5cd510]", "hover:bg-[#d1d1d1]")
+    triggerBtn.classList.replace("hover:border-[#4db70b]", "hover:bg-[#b0b0b0]")
   }
 
   const activateStepTwo = (filetype) => {
     stepTwo.classList.remove("opacity-50")
     stepTwoPing.classList.add("animate-ping-slow")
     stepTwoRound.classList.remove("shadow-white-rounded")
+    uploadOptions.classList.replace("bg-[#e0e0e0]", "bg-white")
 
     if (isWordDocument(validatedFiles)) {
       let convertOptions = ["pdf"]
@@ -135,7 +157,7 @@ const init = () => {
         let option = document.createElement("option")
         option.value = format
         option.innerText = capitalizeFirstLetter(format)
-        option.classList.add("text-left")
+        option.classList.add("md:text-left")
         uploadOptions.add(option)
       })
     }
@@ -146,6 +168,7 @@ const init = () => {
     stepTwoPing.classList.remove("animate-ping-slow")
     stepTwoRound.classList.add("shadow-white-rounded")
     stepTwoRound.innerText = "✓"
+    uploadOptions.classList.replace("bg-white", "bg-[#e0e0e0]")
   }
 
   const activateStepThree = () => {
@@ -161,7 +184,7 @@ const init = () => {
       let option = document.createElement("option")
       option.value = format
       option.innerText = capitalizeFirstLetter(format)
-      option.classList.add("text-left")
+      option.classList.add("md:text-left")
       uploadOptions.add(option)
     })
 
@@ -175,59 +198,26 @@ const init = () => {
     stepThree.classList.add("opacity-50")
     stepThreeRound.classList.add("shadow-white-rounded")
     stepThreePing.classList.remove("animate-ping-slow")
-  }
 
+    triggerBtn.classList.replace("bg-[#e0e0e0]", "bg-[#9bf759]")
+    triggerBtn.classList.replace("border-[#cfcfcf]", "border-[#5cd510]")
+    triggerBtn.classList.replace("hover:bg-[#d1d1d1]", "hover:bg-[#5cd510]")
+    triggerBtn.classList.replace("hover:bg-[#b0b0b0]", "hover:border-[#4db70b]")
+    uploadOptions.classList.replace("bg-white", "bg-[#e0e0e0]")
+  }
+  console.log(uploadBlock)
   /* Events */
   document.addEventListener("drop", onDrop)
   document.addEventListener("dragover", onDragOver)
   triggerBtn.addEventListener("click", onClick)
-  uploadInput.addEventListener("change", onChange)
-  uploadOptions.addEventListener("change", onChange)
+  uploadBlock.addEventListener("change", onChange)
+  uploadBlock.addEventListener("change", scrollToStep)
   uploadBlock.addEventListener("dragenter", onDragEnter)
   dropzoneWrapper.addEventListener("dragleave", onDragLeave)
   dropzoneWrapper.addEventListener("dragover", onDragOver)
   dropzoneWrapper.addEventListener("drop", onDrop)
 }
 
-/* Initialize */
 if ("draggable" in document.createElement("div")) {
   init()
 }
-
-// uploadInput onchange if validatedFiles
-// => step 1: remove pinging
-// => step 1: add rounded
-// => step 1: set text to '✓'
-// => step 1: set progress.width to '50%'
-// => step 2: remove opacity-50
-// => step 2: remove rounded
-// => step 2: add pinging
-// => step 2: set text to data-id
-// => step 2: update select types
-// => step 3: add opacity-50
-// else (resetAllSteps)
-// => step 1: add pinging
-// => step 1: remove rounded
-// => step 1: set text to data-id
-// => step 1: set progress.width to '0%'
-// => step 2: add opacity-50
-// => step 2: remove pinging
-// => step 2: add rounded
-// => step 2: set text to data-id
-// => step 2: select all select types
-// => step 3: add opacity-50
-// => step 3: add rounded
-// => step 3: remove pinging
-
-// uploadOptions onchange if validatedFiles && uploadOptions.value
-// => step 2: set text to '✓'
-// => step 2: add rounded
-// => step 2: remove pinging
-// => step 2: set progress.width to '100%'
-// => step 3: remove opacity-50
-// else
-// => step 2: remove rounded
-// => step 2: add pinging
-// => step 2: set text to data-id
-// => step 2: set progress.width to '50%'
-// => step 3: add opacity-50
