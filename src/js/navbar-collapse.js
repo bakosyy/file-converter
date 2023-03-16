@@ -14,7 +14,3 @@ const toggleNavbar = () => {
 }
 
 toggler.addEventListener("click", toggleNavbar)
-
-window.addEventListener("resize", () => {
-  console.log(123)
-})

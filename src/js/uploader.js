@@ -7,6 +7,7 @@ const init = () => {
   const uploadInputText = document.querySelector(".uploadInputText")
   const uploadOptions = document.querySelector(".uploadOptions")
   const triggerBtn = document.querySelector(".uploadInputTrigger")
+  const convertBtn = document.querySelector("button.convert")
   const stepOne = document.getElementById("step-1")
   const stepOnePing = stepOne.querySelector(".pingElement")
   const stepOneRound = stepOne.querySelector(".roundElement")
@@ -17,6 +18,10 @@ const init = () => {
   const stepThreePing = stepThree.querySelector(".pingElement")
   const stepThreeRound = stepThree.querySelector(".roundElement")
   const progress = document.querySelector(".progress-bar span")
+  const uploadProgress = document.querySelector(
+    ".upload-progress .progress-bar"
+  )
+  const filelist = document.querySelector(".filelist")
 
   /* State */
   let validatedFiles
@@ -36,6 +41,7 @@ const init = () => {
       if (validatedFiles) {
         completeStepOne()
         activateStepTwo()
+        collapseFilelist()
       }
     }
 
@@ -175,6 +181,12 @@ const init = () => {
     stepThree.classList.remove("opacity-50")
     stepThreeRound.classList.remove("shadow-white-rounded")
     stepThreePing.classList.add("animate-ping-slow")
+
+    convertBtn.classList.replace("bg-[#e0e0e0]", "bg-[#9bf759]")
+    convertBtn.classList.replace("border-[#cfcfcf]", "border-[#5cd510]")
+    convertBtn.classList.add("hover:bg-[#5cd510]")
+    convertBtn.classList.add("hover:border-[#4db70b]")
+    convertBtn.nextElementSibling.classList.remove("hidden")
   }
 
   const resetAllSteps = () => {
@@ -204,18 +216,62 @@ const init = () => {
     triggerBtn.classList.replace("hover:bg-[#d1d1d1]", "hover:bg-[#5cd510]")
     triggerBtn.classList.replace("hover:bg-[#b0b0b0]", "hover:border-[#4db70b]")
     uploadOptions.classList.replace("bg-white", "bg-[#e0e0e0]")
+
+    convertBtn.classList.replace("bg-[#9bf759]", "bg-[#e0e0e0]")
+    convertBtn.classList.replace("border-[#5cd510]", "border-[#cfcfcf]")
+    convertBtn.classList.remove("hover:bg-[#5cd510]")
+    convertBtn.classList.remove("hover:border-[#4db70b]")
+    convertBtn.nextElementSibling.classList.add("hidden")
   }
-  console.log(uploadBlock)
+
+  const collapseFilelist = () => {
+    filelist.style.maxHeight = filelist.scrollHeight + "px"
+  }
+
+  const verifyFile = () => {
+    if (!validatedFiles) {
+      alert("Please select your files to convert (in Step 1).")
+    } else if (validatedFiles && !uploadOptions.value) {
+      alert("Please choose the format to convert your files to (in Step 2).")
+    } else {
+      return true
+    }
+  }
+
+  const changeStepButtonsStyles = () => {
+    triggerBtn.classList.add("opacity-50")
+    uploadOptions.classList.add("opacity-50")
+    convertBtn.parentElement.classList.add("opacity-50")
+
+    stepThreePing.classList.remove("animate-ping-slow")
+    stepThreeRound.classList.add("shadow-white-rounded")
+    stepThreeRound.innerText = "✓"
+  }
+
+  const makeStepButtonsDisabled = () => {
+    uploadInput.setAttribute("disabled", "")
+    uploadOptions.setAttribute("disabled", "")
+    convertBtn.removeEventListener("click", handleUpload)
+  }
+
+  const handleUpload = () => {
+    if (verifyFile()) {
+      makeStepButtonsDisabled()
+      changeStepButtonsStyles()
+    }
+  }
+
   /* Events */
   document.addEventListener("drop", onDrop)
   document.addEventListener("dragover", onDragOver)
-  triggerBtn.addEventListener("click", onClick)
-  uploadBlock.addEventListener("change", onChange)
-  uploadBlock.addEventListener("change", scrollToStep)
-  uploadBlock.addEventListener("dragenter", onDragEnter)
   dropzoneWrapper.addEventListener("dragleave", onDragLeave)
   dropzoneWrapper.addEventListener("dragover", onDragOver)
   dropzoneWrapper.addEventListener("drop", onDrop)
+  triggerBtn.addEventListener("click", onClick)
+  convertBtn.addEventListener("click", handleUpload)
+  uploadBlock.addEventListener("change", onChange)
+  uploadBlock.addEventListener("change", scrollToStep)
+  uploadBlock.addEventListener("dragenter", onDragEnter)
 }
 
 if ("draggable" in document.createElement("div")) {
