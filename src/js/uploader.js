@@ -1,3 +1,5 @@
+import axios from "axios"
+
 const init = () => {
   /* Selectors */
   const dropzoneWrapper = document.querySelector(".dropzoneWrapper")
@@ -18,10 +20,16 @@ const init = () => {
   const stepThreePing = stepThree.querySelector(".pingElement")
   const stepThreeRound = stepThree.querySelector(".roundElement")
   const progress = document.querySelector(".progress-bar span")
-  const uploadProgress = document.querySelector(
+  const filelist = document.querySelector(".filelist")
+  const uploadProgressBar = document.querySelector(
     ".upload-progress .progress-bar"
   )
-  const filelist = document.querySelector(".filelist")
+  const uploadProgressValue = document.querySelector(
+    ".upload-progress .progress-value"
+  ).value
+  const filename = filelist.querySelector(".filename")
+  const filesize = filelist.querySelector(".filesize")
+  const deleteFileBtn = filelist.querySelector(".close")
 
   /* State */
   let validatedFiles
@@ -224,8 +232,38 @@ const init = () => {
     convertBtn.nextElementSibling.classList.add("hidden")
   }
 
+  const showFileInformation = ({ name, size }) => {
+    let sizeValue
+    let sizeInBytes = size
+    let sizeInKB = (sizeInBytes / 1000).toFixed(2)
+    let sizeInMB = (sizeInBytes / 1000 / 1000).toFixed(2)
+
+    if (sizeInMB >= 1) {
+      sizeValue = sizeInMB + " MB"
+    } else if (sizeInKB >= 1) {
+      sizeValue = sizeInKB + " KB"
+    } else {
+      sizeValue = sizeInBytes + " B"
+    }
+
+    filename.innerText = name
+    filesize.innerText = sizeValue
+  }
+
   const collapseFilelist = () => {
     filelist.style.maxHeight = filelist.scrollHeight + "px"
+
+    showFileInformation(validatedFiles[0])
+  }
+
+  const clearFilelist = () => {
+    filelist.style.maxHeight = 0
+
+    validatedFiles = []
+
+    uploadInput.value = ""
+
+    resetAllSteps()
   }
 
   const verifyFile = () => {
@@ -251,13 +289,41 @@ const init = () => {
   const makeStepButtonsDisabled = () => {
     uploadInput.setAttribute("disabled", "")
     uploadOptions.setAttribute("disabled", "")
-    convertBtn.removeEventListener("click", handleUpload)
+    convertBtn.removeEventListener("click", handleUploadFile)
   }
 
-  const handleUpload = () => {
+  const makeDeleteFileBtnUnclickable = () => {
+    deleteFileBtn.removeEventListener("click", clearFilelist)
+    deleteFileBtn.style.cursor = "auto"
+  }
+
+  const uploadFile = () => {
+    const onUploadProgress = (e) => {
+      console.log(Math.round(e.progress * 100))
+    }
+
+    const onFileSubmit = async () => {
+      axios.post(
+        "http://progress-event.local/api/documents",
+        {
+          document: file.files[0]
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          },
+          onUploadProgress
+        }
+      )
+    }
+  }
+
+  const handleUploadFile = () => {
     if (verifyFile()) {
       makeStepButtonsDisabled()
       changeStepButtonsStyles()
+      makeDeleteFileBtnUnclickable()
+      uploadFile()
     }
   }
 
@@ -268,10 +334,11 @@ const init = () => {
   dropzoneWrapper.addEventListener("dragover", onDragOver)
   dropzoneWrapper.addEventListener("drop", onDrop)
   triggerBtn.addEventListener("click", onClick)
-  convertBtn.addEventListener("click", handleUpload)
   uploadBlock.addEventListener("change", onChange)
   uploadBlock.addEventListener("change", scrollToStep)
   uploadBlock.addEventListener("dragenter", onDragEnter)
+  deleteFileBtn.addEventListener("click", clearFilelist)
+  convertBtn.addEventListener("click", handleUploadFile)
 }
 
 if ("draggable" in document.createElement("div")) {
