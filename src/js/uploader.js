@@ -21,12 +21,11 @@ const init = () => {
   const stepThreeRound = stepThree.querySelector(".roundElement")
   const progress = document.querySelector(".progress-bar span")
   const filelist = document.querySelector(".filelist")
-  const uploadProgressBar = document.querySelector(
-    ".upload-progress .progress-bar"
-  )
-  const uploadProgressValue = document.querySelector(
-    ".upload-progress .progress-value"
-  ).value
+  const overallProgress = document.querySelector(".upload-progress-label")
+  const uploadProgress = document.querySelector(".upload-progress")
+  const uploadProgressBar = uploadProgress.querySelector(".progress-bar")
+  const uploadProgressBarText = uploadProgress.querySelector(".progress-value")
+  const progressInTable = document.querySelector("table .progress-value")
   const filename = filelist.querySelector(".filename")
   const filesize = filelist.querySelector(".filesize")
   const deleteFileBtn = filelist.querySelector(".close")
@@ -296,26 +295,45 @@ const init = () => {
     deleteFileBtn.removeEventListener("click", clearFilelist)
     deleteFileBtn.style.cursor = "auto"
   }
-
+  console.log(window.location)
   const uploadFile = () => {
+    const formdata = new FormData()
+    formdata.append("uploadFile", validatedFiles[0])
+    formdata.append("conversionType", uploadOptions.value)
+
     const onUploadProgress = (e) => {
-      console.log(Math.round(e.progress * 100))
+      let progress = Math.round(e.progress * 100)
+      console.log(e)
+      if (progress > 0) {
+        overallProgress.classList.replace("md:hidden", "md:block")
+        uploadProgress.classList.remove("hidden")
+        uploadProgressBar.style.width = `${progress}%`
+        uploadProgressBarText.innerText = `${progress}%`
+        progress !== 100
+          ? (progressInTable.innerText = `${progress}% uploaded`)
+          : (progressInTable.innerText = `Converting`)
+      }
     }
 
-    const onFileSubmit = async () => {
-      axios.post(
-        "http://progress-event.local/api/documents",
-        {
-          document: file.files[0]
+    axios
+      .post("http://converter.local/api/upload", formdata, {
+        headers: {
+          "Content-Type": "multipart/form-data"
         },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          },
-          onUploadProgress
+        onUploadProgress
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          document.location.href = "https://google.com"
         }
-      )
-    }
+      })
+      .catch((err) => {
+        progressInTable.innerText = "Error occured"
+        setTimeout(() => {
+          alert("Service unavailable, try again later.")
+          document.location.reload()
+        }, 500)
+      })
   }
 
   const handleUploadFile = () => {
@@ -344,3 +362,6 @@ const init = () => {
 if ("draggable" in document.createElement("div")) {
   init()
 }
+
+const params = new URLSearchParams(document.location.search)
+console.log([...params])

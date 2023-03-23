@@ -142,7 +142,7 @@
                 <div class="pingElement absolute inset-0 bg-[#6de324] rounded-full"></div>
                 <div class="roundElement hidden md:flex absolute inset-0 z-10 items-center justify-center text-white text-[28px] font-medium bg-[#4db70b] rounded-full shadow-white-rounded">2</div>
               </div>
-              <select name="uploadOptions" class="uploadOptions w-full rounded x-lg:text-xl md:text-base text-center text-[#616161] bg-[#e0e0e0] hover:bg-[#e0e0e0] border border-[#cfcfcf] transition duration-500 outline-none p-2 md:px-5 font-medium md:font-normal">
+              <select name="conversionType" class="uploadOptions w-full rounded x-lg:text-xl md:text-base text-center text-[#616161] bg-[#e0e0e0] hover:bg-[#e0e0e0] border border-[#cfcfcf] transition duration-500 outline-none p-2 md:px-5 font-medium md:font-normal">
                 <option value class="md:text-left">Convert to</option>
                 <option value="pdf" class="md:text-left">Pdf</option>
                 <option value="mp3" class="md:text-left">Mp3</option>
@@ -180,14 +180,14 @@
 
       <!-- Filelist -->
       <!-- Add class max-h-0 -->
-      <section class="filelist bg-banner md:bg-none  overflow-hidden transition-[max-height] duration-700 ease-out md:bg-[#f7f7f7]">
+      <section class="filelist max-h-0 bg-banner md:bg-none overflow-hidden transition-[max-height] duration-700 ease-out md:bg-[#f7f7f7]">
         <div class="max-w-screen-x-xs md:max-w-[600px] 2x-md:max-w-[760px] x-lg:max-w-[920px] m-auto p-2 px-5 pb-4 -mt-4 md:mt-0">
           <div class="bg-white bg-opacity-20 rounded py-8 px-4">
 
             <div class="md:grid md:grid-cols-3 md:items-center text-white md:text-gray-700 text-2xl font-light md:font-semibold text-center md:text-left">
               <div class="mb-4 md:mb-6">File to <span class="md:text-sky-600">Convert</span></div>
-              <div class="text-base text-right font-semibold md:pr-4 md:mb-4">Overall <span class="hidden x-lg:inline">conversion/upload</span> progress:</div>
-              <div class="upload-progress relative h-8 mb-2 md:mb-3 overflow-hidden">
+              <div class="upload-progress-label hidden md:hidden text-base text-right font-semibold md:pr-4 md:mb-4">Overall <span class="hidden x-lg:inline">conversion/upload</span> progress:</div>
+              <div class="upload-progress hidden relative h-8 mb-2 md:mb-3 overflow-hidden">
                 <div class="absolute inset-0 bg-[#e9ecef]"></div>
                 <div class="progress-bar absolute inset-0" style="width: 0%;">
                   <span style="height: 32px;"></span>
@@ -211,7 +211,7 @@
                   <tr class="border-x">
                     <td class="filename bg-white md:bg-gray-400 md:bg-opacity-5 border-t border-gray-400 py-2.5 px-3">undefined</td>
                     <td class="filesize hidden md:table-cell bg-white md:bg-gray-400 md:bg-opacity-5 border-t border-gray-400 py-2.5 px-3">undefined</td>
-                    <td class="hidden md:table-cell bg-white md:bg-gray-400 md:bg-opacity-5 border-t border-gray-400 py-2.5 px-3">Pending</td>
+                    <td class="progress-value hidden md:table-cell bg-white md:bg-gray-400 md:bg-opacity-5 border-t border-gray-400 py-2.5 px-3">Pending</td>
                     <td class="bg-white md:bg-gray-400 md:bg-opacity-5 text-right border-t border-gray-400 py-2.5 px-3">
                       <button class="close text-2xl font-bold opacity-50">×</button>
                     </td>
