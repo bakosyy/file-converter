@@ -326,7 +326,7 @@ const init = () => {
         if (res.status === 200) {
           let fileToken = res.data.file_token
 
-          document.location.href = `${document.location.href}convert/${fileToken}`
+          document.location.href = `${document.location.href}convert.html?fileToken=${fileToken}`
         }
       })
       .catch((err) => {
