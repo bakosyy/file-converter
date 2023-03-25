@@ -295,7 +295,7 @@ const init = () => {
     deleteFileBtn.removeEventListener("click", clearFilelist)
     deleteFileBtn.style.cursor = "auto"
   }
-  console.log(window.location)
+
   const uploadFile = () => {
     const formdata = new FormData()
     formdata.append("uploadFile", validatedFiles[0])
@@ -324,7 +324,9 @@ const init = () => {
       })
       .then((res) => {
         if (res.status === 200) {
-          document.location.href = "https://google.com"
+          let fileToken = res.data.file_token
+
+          document.location.href = `${document.location.href}convert/${fileToken}`
         }
       })
       .catch((err) => {
@@ -362,6 +364,3 @@ const init = () => {
 if ("draggable" in document.createElement("div")) {
   init()
 }
-
-const params = new URLSearchParams(document.location.search)
-console.log([...params])
