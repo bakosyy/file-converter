@@ -40,18 +40,27 @@ const init = () => {
   }
 
   /* Listeners */
-  const onChange = (e) => {
+  // const onChange = (e) => {}
+
+  const onUploadInputChange = (e) => {
     // onChange for input[type=file]
     if (e.target === uploadInput) {
-      resetAllSteps()
-      validatedFiles = handleFilesValidation(e.target.files)
-      if (validatedFiles) {
-        completeStepOne()
-        activateStepTwo()
-        collapseFilelist()
+      let newFile = e.target.files
+
+      if (newFile.length) {
+        resetAllSteps()
+        validatedFiles = handleFilesValidation(e.target.files)
+
+        if (validatedFiles) {
+          completeStepOne()
+          activateStepTwo()
+          collapseFilelist()
+        }
       }
     }
+  }
 
+  const onUploadOptionsChange = (e) => {
     // onChange for select
     if (e.target === uploadOptions) {
       if (uploadInput.files[0] && uploadOptions.value) {
@@ -347,6 +356,10 @@ const init = () => {
     }
   }
 
+  setInterval(() => {
+    console.log(validatedFiles)
+  }, 1000)
+
   /* Events */
   document.addEventListener("drop", onDrop)
   document.addEventListener("dragover", onDragOver)
@@ -354,7 +367,10 @@ const init = () => {
   dropzoneWrapper.addEventListener("dragover", onDragOver)
   dropzoneWrapper.addEventListener("drop", onDrop)
   triggerBtn.addEventListener("click", onClick)
-  uploadBlock.addEventListener("change", onChange)
+  // uploadBlock.addEventListener("change", onChange)
+  uploadInput.addEventListener("change", onUploadInputChange)
+  uploadOptions.addEventListener("change", onUploadOptionsChange)
+  //
   uploadBlock.addEventListener("change", scrollToStep)
   uploadBlock.addEventListener("dragenter", onDragEnter)
   deleteFileBtn.addEventListener("click", clearFilelist)
