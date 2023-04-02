@@ -5,7 +5,16 @@ module.exports = {
     extend: {
       backgroundImage: {
         "navbar-toggler-icon": 'url("./assets/images/navbar-toggler-icon.svg")',
+
         banner: 'url("./assets/images/banner-grid.webp")',
+
+        twitter: 'url("./assets/images/twitter.svg")',
+
+        "navbar-toggler-icon-other":
+          'url("../assets/images/navbar-toggler-icon.svg")',
+
+        "banner-other": 'url("../assets/images/banner-grid.webp")',
+
         "banner-splash":
           'url("./assets/images/banner-splash.png"),url("./assets/images/banner-grid.webp")'
       },

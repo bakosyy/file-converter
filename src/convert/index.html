@@ -10,9 +10,176 @@
 
 <body>
   <div id="app">
-    <div class="px-10 pt-10 gap-4 flex items-center">
-      <button class="p-1 px-2 bg-blue-200 border-2 rounded border-blue-700">Make request</button>
-    </div>
+    <!-- Header -->
+    <header>
+      <nav class="fixed top-0 inset-x-0 bg-white z-30 shadow">
+        <div class="collapseParent max-w-screen-x-xs md:max-w-screen-sm 2x-md:max-w-[960px] x-lg:max-w-[1140px] m-auto py-2 px-2 md:px-4">
+          <div class="flex justify-between items-center relative z-20 px-2">
+            <!-- Logo -->
+            <div class="">
+              <a href="#">
+                <img src="../assets/images/logo.jpg" alt="website-logo" class="w-52 py-[5px]">
+              </a>
+            </div>
+            <!-- Collapse toggler -->
+            <div class="flex flex-row-reverse 2x-md:flex-row items-center">
+              <button class="2x-md:hidden collapser border border-black border-opacity-10 py-1 px-3 cursor-pointer rounded">
+                <span class="block w-7 h-7 bg-navbar-toggler-icon-other bg-no-repeat bg-auto bg-center"></span>
+              </button>
+
+              <div class="hidden 2x-md:flex text-[#3b3b3b]">
+                <ul class="flex uppercase text-[80%]">
+                  <li>
+                    <a href="#" class="block hover:bg-[#eee] rounded text-gray-500 p-3">API</a>
+                  </li>
+                  <li>
+                    <a href="#" class="block hover:bg-[#eee] rounded text-gray-500 p-3">Formats</a>
+                  </li>
+                  <li>
+                    <a href="#" class="block hover:bg-[#eee] rounded text-gray-500 p-3">My files</a>
+                  </li>
+                  <li>
+                    <a href="#" class="block hover:bg-[#eee] rounded text-gray-500 p-3">Help</a>
+                  </li>
+                </ul>
+              </div>
+
+              <ul class="hidden md:flex items-center">
+                <li>
+                  <a href="#" class="uppercase text-[0.8rem] text-[#0967d3] hover:text-white hover:bg-[#0967d3] transition-all duration-200 border border-[#0967d3] rounded py-2 px-6 mx-2">Log In</a>
+                </li>
+                <li>
+                  <a href="#" class="uppercase bg-[#0967d3] hover:bg-[#0755ae] transition-all duration-300 text-[0.8rem] text-white rounded py-2 px-6 mr-2">Sign Up</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="collapsible max-h-0 overflow-hidden transition-[max-height] duration-300 ease-out 2x-md:hidden">
+            <ul class="flex flex-col px-4">
+              <li>
+                <a href="#" class="block text-gray-500 p-3">API</a>
+              </li>
+              <li>
+                <a href="#" class="block text-gray-500 p-3">Formats</a>
+              </li>
+              <li>
+                <a href="#" class="block text-gray-500 p-3">My files</a>
+              </li>
+              <li>
+                <a href="#" class="block text-gray-500 p-3">Help</a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </nav>
+      <div class="bg-banner-other bg-repeat mt-[75px] py-6 px-4">
+        <div class="max-w-screen-x-xs x-xs:px-8 m-auto">
+          <h1 class="text-[2rem] leading-5 text-white font-light">All Done!</h1>
+        </div>
+      </div>
+    </header>
+
+    <main class="py-8 bg-[#f7f7f7]">
+      <div class="px-4 m-auto">
+        <div class="mb-4">
+          <div id="converting-intro" class="bg-[#d4edda] text-[#155724] border border-[#c3e6cb] rounded py-3 px-5 mb-4">
+            Download your converted file now or <a href="#" class="text-[#2487eb]">convert more files</a>
+          </div>
+          <table id="conversions" class="table-auto w-full border-collapse">
+            <thead class="">
+              <tr class="bg-[#f0faff] text-[#0967d3] uppercase border-t border-b-2 border-x border-[#dee2e6]">
+                <th class="text-left font-normal leading-5 py-5 px-3">File</th>
+                <th class="text-right font-normal leading-5 py-5 pl-3 pr-9">Status</th>
+              </tr>
+            </thead>
+            <tbody class="">
+              <tr class="border-x bg-black bg-opacity-5">
+                <td class="name text-[#2487eb] border-t border-gray-400 py-3.5 px-3">undefined</td>
+                <td class="text-right border-t border-gray-400 py-3.5 px-3">
+                  <button class="text-[#212529] border border-[#cfcfcf] bg-[#cfcfcf] py-1.5 px-3 rounded">Download</button>
+                </td>
+                <!-- <td class="progress-value hidden md:table-cell bg-white md:bg-gray-400 md:bg-opacity-5 border-t border-gray-400 py-2.5 px-3">Pending</td> -->
+              </tr>
+            </tbody>
+            <tfoot class="shadow-lg">
+              <tr class="border-x">
+                <td class="bg-[#fafdff] text-[80%] md:bg-opacity-5 border-t border-[#dee2e6] p-3">Files are stored for 24 hours (<a href="#" class="text-[#2487eb]">want longer?</a>)</td>
+                <td class="bg-[#fafdff] text-[80%] text-right border-t border-[#dee2e6] p-3">
+                  <div class="space-y-0.5">
+                    <a href="#" class="inline-flex bg-[#2487eb] border border-[#2487eb] rounded pr-1 py-1 mr-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="h-4 w-6" color="#ffffff">
+                        <path fill="#ffffff" fill-rule="evenodd" d="M4.55,7 C4.7984,7 5,7.23403636 5,7.52247273 L5,13.4775273 C5,13.7659636 4.7984,14 4.55,14 L2.45,14 C2.2016,14 2,13.7659636 2,13.4775273 L2,7.52247273 C2,7.23403636 2.2016,7 2.45,7 L4.55,7 Z M6.54470232,13.2 C6.24016877,13.1641086 6.01734614,12.8982791 6,12.5737979 C6.01734614,12.5737979 6.01344187,9.66805666 6,8.14398693 C6.01344187,7.61903931 6.10849456,6.68623352 6.39801308,6.27384278 C7.10556287,5.26600749 7.60281698,4.6079584 7.89206808,4.22570082 C8.18126341,3.8435016 8.52813047,3.4708734 8.53777961,3.18572676 C8.55077527,2.80206854 8.53655255,2.79471518 8.53777961,2.35555666 C8.53900667,1.91639814 8.74565444,1.5 9.27139313,1.5 C9.52544997,1.5 9.7301456,1.55690094 9.91922413,1.80084547 C10.2223633,2.15596568 10.4343097,2.71884727 10.4343097,3.60971169 C10.4343097,4.50057612 9.50989975,6.1729303 9.50815961,6.18 C9.50815961,6.18 13.5457098,6.17908951 13.5464084,6.18 C14.1635544,6.17587601 14.5,6.72543196 14.5,7.29718426 C14.5,7.83263667 14.1341135,8.27897346 13.6539433,8.3540827 C13.9452023,8.49286263 14.1544715,8.82364675 14.1544715,9.20555417 C14.1544715,9.68159617 13.8293011,10.0782687 13.3983805,10.1458495 C13.6304619,10.2907572 13.7736931,10.5516845 13.7736931,10.847511 C13.7736931,11.2459343 13.5138356,11.5808619 13.1594388,11.6612236 C13.3701582,11.7991865 13.5063617,12.0543945 13.5063617,12.3429843 C13.5063617,12.7952155 13.1715421,13.1656844 12.7434661,13.2 L6.54470232,13.2 Z">
+                        </path>
+                      </svg>
+                      <span class="text-[11px] text-white">Like 10k</span>
+                    </a>
+                    <a href="#" class="inline-flex items-center gap-1 bg-[#49a4f3] border border-[#49a4f3] rounded py-1 px-1 mr-2">
+                      <img src="../assets/images/twitter.svg" alt="" class="w-[14px] h-[14px]">
+                      <span class="text-[11px] text-white">Follow</span>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+          <div class="mt-10">
+            <div class="flex items-center rounded-full justify-center bg-white border border-black border-opacity-[0.125] p-3">
+              <span></span>
+              <a href="#" class="flex items-center text-[#2487eb] border border-[#2487eb] rounded-full py-2 px-3">
+                <img src="../assets/images/bmc_icon_black.png" alt="" class="overflow-clip w-4 h-6 mx-2">
+                Buy us a coffee
+                <img src="../assets/images/bmc_icon_black.png" alt="" class="overflow-clip w-4 h-6 mx-2">
+              </a>
+            </div>
+          </div>
+        </div>
+        <!-- Need API? -->
+        <div class="bg-white border border-black border-opacity-[0.125] rounded px-4">
+          <div class="flex flex-col text-center py-6 px-8">
+            <h4 class="text-[#2487eb] text-xl font-medium mb-2">Need a file conversion API?</h4>
+            <ul class="mb-4">
+              <li class="py-1 before:[content:'✓'] before:text-[#40914f] before:font-bold before:mr-2">Add conversion to your app or site</li>
+              <li class="py-1 before:[content:'✓'] before:text-[#40914f] before:font-bold before:mr-2">1,100+ conversions supported</li>
+              <li class="py-1 before:[content:'✓'] before:text-[#40914f] before:font-bold before:mr-2">Code samples & SDKs provided</li>
+            </ul>
+            <div class="mt-2">
+              <a href="#" class="text-xl text-white bg-[#28a745] border border-[#28a745] rounded-md py-2 px-4">Try the Zamzar API for free</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bg-[#212121] text-white border-t-4 border-[#cfcfcf] pt-8 pb-4">
+      <div class="px-4">
+        <div>
+          <div class="grid grid-cols-2">
+            <div class="col-span-1">
+              <h5 class="font-bold uppercase tracking-[1px] mb-1">Info</h5>
+              <ul class="mb-4">
+                <li><a href="#" class="text-[#cfcfcf] font-light leading-[1.2] mb-2">Formats</a></li>
+                <li><a href="#" class="text-[#cfcfcf] font-light leading-[1.2] mb-2">Compression</a></li>
+                <li><a href="#" class="text-[#cfcfcf] font-light leading-[1.2] mb-2">Pricing</a></li>
+                <li><a href="#" class="text-[#cfcfcf] font-light leading-[1.2] mb-2">FAQ</a></li>
+                <li><a href="#" class="text-[#cfcfcf] font-light leading-[1.2] mb-2">Status</a></li>
+              </ul>
+            </div>
+            <div class="col-span-1">
+              <h5 class="font-bold uppercase tracking-[1px] mb-1">Info</h5>
+              <ul class="mb-4">
+                <li><a href="#" class="text-[#cfcfcf] font-light leading-[1.2] mb-2">Formats</a></li>
+                <li><a href="#" class="text-[#cfcfcf] font-light leading-[1.2] mb-2">Compression</a></li>
+                <li><a href="#" class="text-[#cfcfcf] font-light leading-[1.2] mb-2">Status</a></li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </footer>
+
   </div>
 
   <script type="module" src="./convert.js"></script>

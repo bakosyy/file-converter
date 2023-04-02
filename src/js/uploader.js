@@ -3,10 +3,8 @@ import axios from "axios"
 const init = () => {
   /* Selectors */
   const dropzoneWrapper = document.querySelector(".dropzoneWrapper")
-  const dropzone = document.querySelector(".dropzone")
   const uploadBlock = document.querySelector(".uploader")
   const uploadInput = document.querySelector(".uploadInput")
-  const uploadInputText = document.querySelector(".uploadInputText")
   const uploadOptions = document.querySelector(".uploadOptions")
   const triggerBtn = document.querySelector(".uploadInputTrigger")
   const convertBtn = document.querySelector("button.convert")
@@ -31,7 +29,7 @@ const init = () => {
   const deleteFileBtn = filelist.querySelector(".close")
 
   /* State */
-  let validatedFiles
+  let validatedFiles = []
   const selectTypes = ["pdf", "mp3"]
 
   /* Helper functions */
@@ -40,86 +38,36 @@ const init = () => {
   }
 
   /* Listeners */
-  // const onChange = (e) => {}
-
   const onUploadInputChange = (e) => {
-    // onChange for input[type=file]
-    if (e.target === uploadInput) {
-      let newFile = e.target.files
+    let newFile = e.target.files
 
-      if (newFile.length) {
-        resetAllSteps()
-        validatedFiles = handleFilesValidation(e.target.files)
+    if (newFile.length) {
+      resetAllSteps()
+      validatedFiles = handleFilesValidation(e.target.files)
 
-        if (validatedFiles) {
-          completeStepOne()
-          activateStepTwo()
-          collapseFilelist()
-        }
+      if (validatedFiles.length === 0) {
+        return alert(
+          "Make sure the file is not empty. Allowed formats are: .doc, .docx"
+        )
       }
+      completeStepOne()
+      activateStepTwo()
+      collapseFilelist()
     }
   }
 
-  const onUploadOptionsChange = (e) => {
-    // onChange for select
-    if (e.target === uploadOptions) {
-      if (uploadInput.files[0] && uploadOptions.value) {
-        completeStepTwo()
-        activateStepThree()
-      }
+  const onUploadOptionsChange = () => {
+    if (
+      (uploadInput.files[0] || validatedFiles.length) &&
+      uploadOptions.value
+    ) {
+      completeStepTwo()
+      activateStepThree()
     }
   }
 
   const onClick = () => {
     uploadInput.click()
-  }
-
-  const onDragEnter = (e) => {
-    e.stopPropagation()
-
-    dropzoneWrapper.classList.remove("hidden")
-  }
-
-  const onDragLeave = (e) => {
-    dropzoneWrapper.classList.add("hidden")
-  }
-
-  const onDragOver = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
-
-  const onDrop = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-
-    if (e.target === dropzone) {
-      // handleFileConverting
-    }
-  }
-
-  const scrollToStep = (e) => {
-    // Defining client browser width
-    let width = window.innerWidth
-    let stepTwoBounding = stepTwo.getBoundingClientRect()
-    let stepThreeBounding = stepThree.getBoundingClientRect()
-    let uploaderBounding = uploadBlock.getBoundingClientRect()
-
-    // If file input was changed
-    if (e.target === uploadInput && validatedFiles) {
-      if (width <= 768) {
-        window.scrollTo({ top: stepTwoBounding.top - 77 - 15 + window.scrollY })
-      } else {
-        window.scrollTo({
-          top: uploaderBounding.top - 77 - 15 + window.scrollY
-        })
-      }
-    }
-
-    // If select options were changed
-    if (e.target === uploadOptions && validatedFiles && width <= 768) {
-      window.scrollTo({ top: stepThreeBounding.top - 77 - 15 + window.scrollY })
-    }
   }
 
   /* Implementation functions */
@@ -145,11 +93,38 @@ const init = () => {
     const validFiles = [...files].filter(isValidFile)
     const allowedTypeFiles = validFiles.filter(isAllowedType)
 
-    return allowedTypeFiles.length
-      ? allowedTypeFiles
-      : alert(
-          "Make sure the file is not empty. Allowed formats are: .doc, .docx"
-        )
+    return allowedTypeFiles
+  }
+
+  const scrollOnUploadInputChange = () => {
+    // Defining client browser width
+    let width = window.innerWidth
+    let stepTwoBounding = stepTwo.getBoundingClientRect()
+    let uploaderBounding = uploadBlock.getBoundingClientRect()
+
+    if (validatedFiles) {
+      if (width <= 768) {
+        window.scrollTo({
+          top: stepTwoBounding.top - 77 - 15 + window.scrollY
+        })
+      } else {
+        window.scrollTo({
+          top: uploaderBounding.top - 77 - 15 + window.scrollY
+        })
+      }
+    }
+  }
+
+  const scrollOnUploadOptionsChange = () => {
+    // Defining client browser width
+    let width = window.innerWidth
+    let stepThreeBounding = stepThree.getBoundingClientRect()
+
+    if (validatedFiles && width <= 768) {
+      window.scrollTo({
+        top: stepThreeBounding.top - 77 - 15 + window.scrollY
+      })
+    }
   }
 
   const completeStepOne = () => {
@@ -164,7 +139,7 @@ const init = () => {
     triggerBtn.classList.replace("hover:border-[#4db70b]", "hover:bg-[#b0b0b0]")
   }
 
-  const activateStepTwo = (filetype) => {
+  const activateStepTwo = () => {
     stepTwo.classList.remove("opacity-50")
     stepTwoPing.classList.add("animate-ping-slow")
     stepTwoRound.classList.remove("shadow-white-rounded")
@@ -335,14 +310,15 @@ const init = () => {
         if (res.status === 200) {
           let fileToken = res.data.file_token
 
-          document.location.href = `${document.location.href}convert.html?fileToken=${fileToken}`
+          uploadInput.value = ""
+          location.href = `${location.href}convert/?fileToken=${fileToken}`
         }
       })
       .catch((err) => {
         progressInTable.innerText = "Error occured"
         setTimeout(() => {
           alert("Service unavailable, try again later.")
-          document.location.reload()
+          location.reload()
         }, 500)
       })
   }
@@ -356,26 +332,55 @@ const init = () => {
     }
   }
 
-  setInterval(() => {
-    console.log(validatedFiles)
-  }, 1000)
+  const onDocumentDragenter = () => {
+    dropzoneWrapper.classList.remove("hidden")
+  }
+
+  const onDocumentDragover = (e) => {
+    e.preventDefault()
+  }
+
+  const onDocumentDrop = (e) => {
+    e.preventDefault()
+    dropzoneWrapper.classList.add("hidden")
+
+    let newFile = e.dataTransfer.files
+    if (newFile.length) {
+      resetAllSteps()
+      validatedFiles = handleFilesValidation(newFile)
+
+      if (validatedFiles.length === 0) {
+        return alert(
+          "Make sure the file is not empty. Allowed formats are: .doc, .docx"
+        )
+      }
+      completeStepOne()
+      activateStepTwo()
+      collapseFilelist()
+      scrollOnUploadInputChange()
+    }
+  }
 
   /* Events */
-  document.addEventListener("drop", onDrop)
-  document.addEventListener("dragover", onDragOver)
-  dropzoneWrapper.addEventListener("dragleave", onDragLeave)
-  dropzoneWrapper.addEventListener("dragover", onDragOver)
-  dropzoneWrapper.addEventListener("drop", onDrop)
   triggerBtn.addEventListener("click", onClick)
-  // uploadBlock.addEventListener("change", onChange)
   uploadInput.addEventListener("change", onUploadInputChange)
+  uploadInput.addEventListener("change", scrollOnUploadInputChange)
   uploadOptions.addEventListener("change", onUploadOptionsChange)
-  //
-  uploadBlock.addEventListener("change", scrollToStep)
-  uploadBlock.addEventListener("dragenter", onDragEnter)
+  uploadOptions.addEventListener("change", scrollOnUploadOptionsChange)
   deleteFileBtn.addEventListener("click", clearFilelist)
   convertBtn.addEventListener("click", handleUploadFile)
+
+  /* Drag & Drop events */
+  document.addEventListener("dragenter", onDocumentDragenter)
+  document.addEventListener("dragover", onDocumentDragover)
+  document.addEventListener("drop", onDocumentDrop)
 }
+
+// Scroll top on page load
+;(() => {
+  document.documentElement.scrollTop = 0
+  document.body.scrollTop = 0
+})()
 
 if ("draggable" in document.createElement("div")) {
   init()
