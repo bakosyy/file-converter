@@ -70,6 +70,35 @@ const init = () => {
     uploadInput.click()
   }
 
+  const onDocumentDragenter = () => {
+    dropzoneWrapper.classList.remove("hidden")
+  }
+
+  const onDocumentDragover = (e) => {
+    e.preventDefault()
+  }
+
+  const onDocumentDrop = (e) => {
+    e.preventDefault()
+    dropzoneWrapper.classList.add("hidden")
+
+    let newFile = e.dataTransfer.files
+    if (newFile.length) {
+      resetAllSteps()
+      validatedFiles = handleFilesValidation(newFile)
+
+      if (validatedFiles.length === 0) {
+        return alert(
+          "Make sure the file is not empty. Allowed formats are: .doc, .docx"
+        )
+      }
+      completeStepOne()
+      activateStepTwo()
+      collapseFilelist()
+      scrollOnUploadInputChange()
+    }
+  }
+
   /* Implementation functions */
   const isValidFile = (file) => {
     return file.size > 0
@@ -311,7 +340,7 @@ const init = () => {
           let fileToken = res.data.file_token
 
           uploadInput.value = ""
-          location.href = `${location.href}convert/?fileToken=${fileToken}`
+          location.href = `${location.origin}/convert/?fileToken=${fileToken}`
         }
       })
       .catch((err) => {
@@ -329,35 +358,6 @@ const init = () => {
       changeStepButtonsStyles()
       makeDeleteFileBtnUnclickable()
       uploadFile()
-    }
-  }
-
-  const onDocumentDragenter = () => {
-    dropzoneWrapper.classList.remove("hidden")
-  }
-
-  const onDocumentDragover = (e) => {
-    e.preventDefault()
-  }
-
-  const onDocumentDrop = (e) => {
-    e.preventDefault()
-    dropzoneWrapper.classList.add("hidden")
-
-    let newFile = e.dataTransfer.files
-    if (newFile.length) {
-      resetAllSteps()
-      validatedFiles = handleFilesValidation(newFile)
-
-      if (validatedFiles.length === 0) {
-        return alert(
-          "Make sure the file is not empty. Allowed formats are: .doc, .docx"
-        )
-      }
-      completeStepOne()
-      activateStepTwo()
-      collapseFilelist()
-      scrollOnUploadInputChange()
     }
   }
 
@@ -385,3 +385,6 @@ const init = () => {
 if ("draggable" in document.createElement("div")) {
   init()
 }
+
+setInterval(() => {}, 1000)
+console.log(location)

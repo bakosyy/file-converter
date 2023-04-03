@@ -8,6 +8,9 @@ module.exports = {
 
         banner: 'url("./assets/images/banner-grid.webp")',
 
+        "convert-page-banner":
+          'url("../assets/images/convert-page-banner.webp")',
+
         twitter: 'url("./assets/images/twitter.svg")',
 
         "navbar-toggler-icon-other":
