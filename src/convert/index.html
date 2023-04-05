@@ -76,7 +76,7 @@
       </nav>
       <div class="bg-banner-other md:bg-convert-page-banner md:bg-center md:h-[121px] bg-repeat py-6 px-4">
         <div class="relative max-w-screen-x-xs md:max-w-[720px] 2x-md:max-w-[960px] x-lg:max-w-[1140px] x-xs:px-8 m-auto">
-          <h1 class="text-[#f8f9fa] font-light leading-5 text-[2rem] md:text-6xl">Converting...</h1>
+          <h1 class="converting-text text-[#f8f9fa] font-light leading-5 text-[2rem] md:text-6xl">Converting...</h1>
           <!-- All Done! -->
           <div class="hidden md:block absolute right-[96px] 2x-md:right-[218px] x-lg:right-[308px] top-[34px] w-9 h-9">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="align-middle overflow-hidden">
@@ -93,8 +93,8 @@
         <div class="2x-md:grid 2x-md:grid-cols-12 2x-md:gap-7 2x-md:items-start">
           <div class="2x-md:col-span-7 x-lg:col-span-8 mb-4">
             <div id="converting-intro" class="bg-white text-[#155724] border rounded py-3 px-5 mb-4">
-              <span class="hidden">Download your converted file now or <a href="/" class="text-[#2487eb]">convert more files</a></span>
-              <span>Hand tight - download links will appear shortly...</span>
+              <span class="success-message hidden">Download your converted file now or <a href="/" class="text-[#2487eb]">convert more files</a></span>
+              <span class="processing-message space-y-4">Hand tight - download links will appear shortly...</span>
               <!-- bg-[#d4edda] border-[#c3e6cb] -->
             </div>
             <table id="conversions" class="table-auto w-full border-collapse">
@@ -106,12 +106,18 @@
               </thead>
               <tbody class="">
                 <tr class="border-x bg-black bg-opacity-5">
-                  <td class="name text-[#2487eb] border-t border-gray-400 py-3.5 px-3">undefined</td>
-                  <td class="text-right border-t border-gray-400 py-3.5 px-3">
-                    <span class="pr-[15px] text-[#3B3B3B]">Converted</span>
-                    <button class="hidden text-[#212529] bg-[#cfcfcf] 2x-md:bg-[#0967D3] 2x-md:text-white 2x-md:text-xl border border-[#cfcfcf] 2x-md:border-[#0967D3] py-1.5 2x-md:py-2 px-3 2x-md:px-4 rounded">Download</button>
+                  <td class="text-[#3B3B3B] border-t border-gray-400 py-[22px] px-3">
+                    <button class="convert-name">
+                      <span class="inline-block rounded-full animate-spin w-4 h-4 border-[2px] border-r-transparent border-blue-400 ml-1"></span>
+                    </button>
                   </td>
-                  <!-- <td class="progress-value hidden md:table-cell bg-white md:bg-gray-400 md:bg-opacity-5 border-t border-gray-400 py-2.5 px-3">Pending</td> -->
+                  <td class="text-right border-t border-gray-400 pt-4 pb-3.5 px-3">
+                    <span class="converting-indicator hidden items-center text-[#3B3B3B] pr-[15px]">
+                      <span class="mr-2 pb-0.5">Converting</span>
+                      <span class="inline-block rounded-full animate-spin w-4 h-4 border-[3px] border-r-transparent border-teal-600"></span>
+                    </span>
+                    <button href="#" class="download-button hidden text-[#212529] bg-[#cfcfcf] border border-[#cfcfcf] py-1.5 px-3 rounded">Download</button>
+                  </td>
                 </tr>
               </tbody>
               <tfoot class="shadow-lg">
