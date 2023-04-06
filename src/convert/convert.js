@@ -115,7 +115,6 @@ const convertFile = async () => {
     return req.data
   } catch (err) {
     showCreditsEndedInfo()
-    console.log(err)
   }
 }
 

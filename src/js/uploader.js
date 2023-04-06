@@ -316,7 +316,6 @@ const init = () => {
 
     const onUploadProgress = (e) => {
       let progress = Math.round(e.progress * 100)
-      console.log(e)
       if (progress > 0) {
         overallProgress.classList.replace("md:hidden", "md:block")
         uploadProgress.classList.remove("hidden")
