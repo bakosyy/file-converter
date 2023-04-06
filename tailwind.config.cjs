@@ -3,23 +3,20 @@ module.exports = {
   content: ["./src/*.html", "./src/**/*.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      fontFamily: {},
       backgroundImage: {
-        "navbar-toggler-icon": 'url("./assets/images/navbar-toggler-icon.svg")',
-
-        banner: 'url("./assets/images/banner-grid.webp")',
-
+        banner: 'url("../assets/images/banner-grid.webp")',
+        "banner-splash":
+          'url("../assets/images/banner-splash.png"), url("../assets/images/banner-grid.webp")',
+        "navbar-toggler-icon":
+          'url("../assets/images/navbar-toggler-icon.svg")',
+        twitter: 'url("../assets/images/twitter.svg")',
+        // Divider
+        "banner-other": 'url("../assets/images/banner-grid.webp")',
         "convert-page-banner":
           'url("../assets/images/convert-page-banner.webp")',
-
-        twitter: 'url("./assets/images/twitter.svg")',
-
         "navbar-toggler-icon-other":
-          'url("../assets/images/navbar-toggler-icon.svg")',
-
-        "banner-other": 'url("../assets/images/banner-grid.webp")',
-
-        "banner-splash":
-          'url("./assets/images/banner-splash.png"),url("./assets/images/banner-grid.webp")'
+          'url("../assets/images/navbar-toggler-icon.svg")'
       },
       animation: {
         "ping-slow": "ping 1.5s linear 0.5s infinite",

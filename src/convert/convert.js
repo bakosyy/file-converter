@@ -15,7 +15,8 @@ const conversions = document.querySelector("table")
 let fileToken = new URLSearchParams(document.location.search).get("fileToken")
 
 const axe = axios.create({
-  baseURL: "http://converter.local/api"
+  baseURL: "https://converter.bakyt.space/api",
+  timeout: 10000
 })
 
 const updateFileInfo = (fileInfo) => {
@@ -61,7 +62,18 @@ const showFileNotFoundInfo = () => {
   processingMessage.innerHTML = `
     <p>Sorry, we couldn't find details for any uploaded files.</p>
     <p>If you entered an email address when converting we'll be in touch soon. If you converted files 24 hours ago they have now expired.</p>
-    <p>If you need further help please contact <a href="mailto:support@bakyt.com" class="text-[#2487EB] hover:text-[#1061b1] hover:underline">our support team</a>.</p>
+    <p>If you need further help please contact <a href="mailto:support@converter.info" class="text-[#2487EB] hover:text-[#1061b1] hover:underline">our support team</a>.</p>
+  `
+  conversions.classList.add("hidden")
+}
+
+const showCreditsEndedInfo = () => {
+  conversionHeading.innerText = "Website credits ended"
+  processingMessage.classList.add("text-[#3B3B3B]")
+  processingMessage.innerHTML = `
+    <p>Sorry, looks like website conversion credits ended.</p>
+    <p>Please contact the website creator to update the conversion credits. </p>
+    <p>If you need further help please contact <a href="mailto:support@converter.info" class="text-[#2487EB] hover:text-[#1061b1] hover:underline">our support team</a>.</p>
   `
   conversions.classList.add("hidden")
 }
@@ -102,6 +114,7 @@ const convertFile = async () => {
 
     return req.data
   } catch (err) {
+    showCreditsEndedInfo()
     console.log(err)
   }
 }
@@ -114,7 +127,6 @@ const makeRequests = async () => {
     updateFileInfo(fileInfo)
 
     const convertedFile = await checkAlreadyConverted()
-    console.log(convertedFile)
     if (convertedFile) {
       showDownloadLinks(convertedFile)
       showFileSuccessInfo()

@@ -329,7 +329,7 @@ const init = () => {
     }
 
     axios
-      .post("http://converter.local/api/upload", formdata, {
+      .post("https://converter.bakyt.space/api/upload", formdata, {
         headers: {
           "Content-Type": "multipart/form-data"
         },
@@ -387,4 +387,3 @@ if ("draggable" in document.createElement("div")) {
 }
 
 setInterval(() => {}, 1000)
-console.log(location)

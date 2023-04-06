@@ -4,21 +4,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vite App</title>
-
+  <title>File conversion | Bakosyy</title>
+  <link rel="icon" type="image/png" href="../assets/logos/convert-logo.png" />
 </head>
 
 <body>
-  <div id="app" class="relative min-h-screen pt-[75px] pb-[380px] x-xs:pb-[216px] bg-[#f7f7f7]">
+  <div id="app" class="relative min-h-screen pt-[72px] pb-[380px] x-xs:pb-[216px] bg-[#f7f7f7]">
     <!-- Header -->
     <header>
       <nav class="fixed top-0 inset-x-0 bg-white z-30 shadow">
         <div class="collapseParent max-w-screen-x-xs md:max-w-screen-sm 2x-md:max-w-[960px] x-lg:max-w-[1140px] m-auto py-2 px-2 md:px-4">
           <div class="flex justify-between items-center relative z-20 px-2">
             <!-- Logo -->
-            <div class="">
-              <a href="/">
-                <img src="../assets/images/logo.jpg" alt="website-logo" class="w-52 py-[5px]">
+            <div class="flex">
+              <a href="/" class="inline-block">
+                <div class="">
+                  <div class="pl-2 py-1">
+                    <img src="../assets/logos/convert-resized.png" alt="" class="h-12 w-40">
+                  </div>
+                </div>
               </a>
             </div>
             <!-- Collapse toggler -->
@@ -95,7 +99,6 @@
             <div id="converting-intro" class="bg-white text-[#155724] border rounded py-3 px-5 mb-4">
               <span class="success-message hidden">Download your converted file now or <a href="/" class="text-[#2487eb]">convert more files</a></span>
               <span class="processing-message space-y-4">Hand tight - download links will appear shortly...</span>
-              <!-- bg-[#d4edda] border-[#c3e6cb] -->
             </div>
             <table id="conversions" class="table-auto w-full border-collapse">
               <thead class="">
@@ -147,8 +150,8 @@
                   <span class="inline-flex items-center justify-center bg-[#e0e0e0] rounded-full w-10 h-10 mr-2">
                     <span class="w-5">👋</span>
                   </span>
-                  <span class="x-lg:hidden text-[#3B3B3B]">Enjoyed using Zamzar?</span>
-                  <span class="hidden x-lg:inline text-[#3B3B3B]">Have you enjoyed using Zamzar and want to support us?</span>
+                  <span class="x-lg:hidden text-[#3B3B3B]">Enjoyed using our API?</span>
+                  <span class="hidden x-lg:inline text-[#3B3B3B]">Have you enjoyed using our API and want to support us?</span>
                 </span>
                 <a href="#" class="flex items-center text-[#2487eb] border border-[#2487eb] rounded-full py-2 px-3">
                   <img src="../assets/images/bmc_icon_black.png" alt="" class="overflow-clip w-4 h-6 mx-2">
@@ -168,10 +171,11 @@
                 <li class="py-1 before:[content:'✓'] before:text-[#40914f] before:font-bold before:mr-2">Code samples & SDKs provided</li>
               </ul>
               <div class="self-center mt-2">
-                <a href="#" class="inline-block text-xl text-white bg-[#28a745] border border-[#28a745] rounded-md py-2 px-4">Try the Zamzar API for free</a>
+                <a href="#" class="inline-block text-xl text-white bg-[#28a745] border border-[#28a745] rounded-md py-2 px-4">Try our API for free</a>
               </div>
             </div>
           </div>
+          <div class="hidden bg-banner md:bg-banner-splash w-0 h-0"></div>
         </div>
       </div>
     </main>
@@ -221,7 +225,6 @@
         </div>
       </div>
     </footer>
-
   </div>
 
   <script type="module" src="./convert.js"></script>
