@@ -63,6 +63,9 @@ const init = () => {
     ) {
       completeStepTwo()
       activateStepThree()
+    } else {
+      resetStepTwo()
+      deactivateStepThree()
     }
   }
 
@@ -197,6 +200,14 @@ const init = () => {
     uploadOptions.classList.replace("bg-white", "bg-[#e0e0e0]")
   }
 
+  const resetStepTwo = () => {
+    progress.style.width = "50%"
+    stepTwoPing.classList.add("animate-ping-slow")
+    stepTwoRound.classList.remove("shadow-white-rounded")
+    stepTwoRound.innerText = "2"
+    uploadOptions.classList.replace("bg-[#e0e0e0]", "bg-white")
+  }
+
   const activateStepThree = () => {
     stepThree.classList.remove("opacity-50")
     stepThreeRound.classList.remove("shadow-white-rounded")
@@ -207,6 +218,18 @@ const init = () => {
     convertBtn.classList.add("hover:bg-[#5cd510]")
     convertBtn.classList.add("hover:border-[#4db70b]")
     convertBtn.nextElementSibling.classList.remove("hidden")
+  }
+
+  const deactivateStepThree = () => {
+    stepThree.classList.add("opacity-50")
+    stepThreeRound.classList.add("shadow-white-rounded")
+    stepThreePing.classList.remove("animate-ping-slow")
+
+    convertBtn.classList.replace("bg-[#9bf759]", "bg-[#e0e0e0]")
+    convertBtn.classList.replace("border-[#5cd510]", "border-[#cfcfcf]")
+    convertBtn.classList.remove("hover:bg-[#5cd510]")
+    convertBtn.classList.remove("hover:border-[#4db70b]")
+    convertBtn.nextElementSibling.classList.add("hidden")
   }
 
   const resetAllSteps = () => {
@@ -279,7 +302,7 @@ const init = () => {
   }
 
   const verifyFile = () => {
-    if (!validatedFiles) {
+    if (validatedFiles.length === 0) {
       alert("Please select your files to convert (in Step 1).")
     } else if (validatedFiles && !uploadOptions.value) {
       alert("Please choose the format to convert your files to (in Step 2).")
