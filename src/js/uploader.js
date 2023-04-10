@@ -31,6 +31,16 @@ const init = () => {
   /* State */
   let validatedFiles = []
   const selectTypes = ["pdf", "mp3"]
+  const convertableTypes = {
+    "video/mp4": ["mp3"],
+    "video/quicktime": ["mp3"],
+    "video/x-msvideo": ["mp3"],
+    "video/x-ms-wmv": ["mp3"],
+    "application/msword": ["pdf"],
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+      "pdf"
+    ]
+  }
 
   /* Helper functions */
   const capitalizeFirstLetter = (string) => {
@@ -52,6 +62,7 @@ const init = () => {
       }
       completeStepOne()
       activateStepTwo()
+      // showSelectOptions()
       collapseFilelist()
     }
   }
@@ -105,14 +116,7 @@ const init = () => {
   }
 
   const isAllowedType = (file) => {
-    return [
-      "application/msword", // .doc
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
-      "video/mp4", // .mp4
-      "video/quicktime", // .mov
-      "video/x-msvideo", // .avi
-      "video/x-ms-wmv" // .wmv
-    ].includes(file.type)
+    return Object.prototype.hasOwnProperty.call(convertableTypes, file.type)
   }
 
   const isWordDocument = (files) => {
@@ -120,18 +124,6 @@ const init = () => {
       "application/msword",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ].includes(files[0].type)
-  }
-
-  const getConvertOptions = (files) => {
-    const fileTypes = {
-      "video/mp4": ["mp3"],
-      "video/quicktime": ["mp3"],
-      "video/x-msvideo": ["mp3"],
-      "video/x-ms-wmv": ["mp3"],
-      "application/msword": ["pdf"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        ["pdf"]
-    }
   }
 
   const handleFilesValidation = (files) => {
@@ -172,6 +164,29 @@ const init = () => {
     }
   }
 
+  const showSelectOptions = () => {
+    if (isWordDocument(validatedFiles)) {
+      // let keys = Object.keys(convertableTypes)
+
+      // console.log(keys.includes("video/mp4"))
+      // if (keys.includes("video/mp4")) {
+      //   console.log(convertableTypes["video/mp4"])
+      // }
+
+      let convertOptions = ["pdf"]
+
+      uploadOptions.length = 1
+
+      convertOptions.forEach((format) => {
+        let option = document.createElement("option")
+        option.value = format
+        option.innerText = capitalizeFirstLetter(format)
+        option.classList.add("md:text-left")
+        uploadOptions.add(option)
+      })
+    }
+  }
+
   const completeStepOne = () => {
     progress.style.width = "50%"
     stepOnePing.classList.remove("animate-ping-slow")
@@ -189,20 +204,6 @@ const init = () => {
     stepTwoPing.classList.add("animate-ping-slow")
     stepTwoRound.classList.remove("shadow-white-rounded")
     uploadOptions.classList.replace("bg-[#e0e0e0]", "bg-white")
-
-    if (isWordDocument(validatedFiles)) {
-      let convertOptions = ["pdf"]
-
-      uploadOptions.length = 1
-
-      convertOptions.forEach((format) => {
-        let option = document.createElement("option")
-        option.value = format
-        option.innerText = capitalizeFirstLetter(format)
-        option.classList.add("md:text-left")
-        uploadOptions.add(option)
-      })
-    }
   }
 
   const completeStepTwo = () => {
@@ -400,5 +401,3 @@ const init = () => {
 if ("draggable" in document.createElement("div")) {
   init()
 }
-
-setInterval(() => {}, 1000)
