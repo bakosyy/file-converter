@@ -47,7 +47,7 @@ const init = () => {
 
       if (validatedFiles.length === 0) {
         return alert(
-          "Make sure the file is not empty. Allowed formats are: .doc, .docx"
+          "Make sure the file is not empty. Allowed formats are: .doc, .docx, .mp4, .mov, .avi, .wmv"
         )
       }
       completeStepOne()
@@ -106,8 +106,12 @@ const init = () => {
 
   const isAllowedType = (file) => {
     return [
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      "application/msword", // .doc
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+      "video/mp4", // .mp4
+      "video/quicktime", // .mov
+      "video/x-msvideo", // .avi
+      "video/x-ms-wmv" // .wmv
     ].includes(file.type)
   }
 
@@ -116,6 +120,18 @@ const init = () => {
       "application/msword",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ].includes(files[0].type)
+  }
+
+  const getConvertOptions = (files) => {
+    const fileTypes = {
+      "video/mp4": ["mp3"],
+      "video/quicktime": ["mp3"],
+      "video/x-msvideo": ["mp3"],
+      "video/x-ms-wmv": ["mp3"],
+      "application/msword": ["pdf"],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        ["pdf"]
+    }
   }
 
   const handleFilesValidation = (files) => {
