@@ -62,7 +62,7 @@ const init = () => {
       }
       completeStepOne()
       activateStepTwo()
-      // showSelectOptions()
+      showSelectOptions()
       collapseFilelist()
     }
   }
@@ -122,13 +122,6 @@ const init = () => {
     return Object.prototype.hasOwnProperty.call(convertableTypes, file.type)
   }
 
-  const isWordDocument = (files) => {
-    return [
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    ].includes(files[0].type)
-  }
-
   const handleFilesValidation = (files) => {
     const validFiles = [...files].filter(isValidFile)
     const allowedTypeFiles = validFiles.filter(isAllowedType)
@@ -168,16 +161,11 @@ const init = () => {
   }
 
   const showSelectOptions = () => {
-    if (isWordDocument(validatedFiles)) {
-      // let keys = Object.keys(convertableTypes)
+    let fileType = validatedFiles[0].type
+    let keys = Object.keys(convertableTypes)
 
-      // console.log(keys.includes("video/mp4"))
-      // if (keys.includes("video/mp4")) {
-      //   console.log(convertableTypes["video/mp4"])
-      // }
-
-      let convertOptions = ["pdf"]
-
+    if (keys.includes(fileType)) {
+      let convertOptions = convertableTypes[fileType]
       uploadOptions.length = 1
 
       convertOptions.forEach((format) => {
@@ -251,8 +239,24 @@ const init = () => {
 
   const resetAllSteps = () => {
     progress.style.width = "0%"
-    selectTypes.length = 1
-    selectTypes.forEach((format) => {
+    uploadOptions.length = 1
+
+    let keys = Object.keys(convertableTypes)
+
+    // if (keys.includes(fileType)) {
+    //   let convertOptions = convertableTypes[fileType]
+    //   uploadOptions.length = 1
+
+    //   convertOptions.forEach((format) => {
+    //     let option = document.createElement("option")
+    //     option.value = format
+    //     option.innerText = capitalizeFirstLetter(format)
+    //     option.classList.add("md:text-left")
+    //     uploadOptions.add(option)
+    //   })
+    // }
+
+    keys.forEach((format) => {
       let option = document.createElement("option")
       option.value = format
       option.innerText = capitalizeFirstLetter(format)
@@ -415,12 +419,12 @@ const init = () => {
   document.addEventListener("drop", onDocumentDrop)
 }
 
-// Scroll top on page load
-;(() => {
-  document.documentElement.scrollTop = 0
-  document.body.scrollTop = 0
-})()
-
 if ("draggable" in document.createElement("div")) {
   init()
 }
+
+// Scroll top on page load
+// ;(() => {
+//   document.documentElement.scrollTop = 0
+//   document.body.scrollTop = 0
+// })()
