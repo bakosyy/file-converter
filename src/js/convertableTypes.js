@@ -5,8 +5,8 @@ const convertableTypes = {
   "video/x-ms-wmv": ["mp3"],
   "application/msword": ["pdf"],
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
-    "pdf"
-  ]
+    "pdf",
+  ],
 }
 
 export default convertableTypes

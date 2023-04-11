@@ -15,13 +15,28 @@ const conversions = document.querySelector("table")
 
 let fileToken = new URLSearchParams(document.location.search).get("fileToken")
 
+const removeExtension = (filename) => {
+  let splitArray = filename.split(".")
+  let filenameWOExtension = splitArray.filter(
+    (item, index) => index !== splitArray.length - 1
+  )
+  return filenameWOExtension.join(".")
+}
+
+const generateFilename = (fileInfo) => {
+  let originalName = removeExtension(fileInfo["file_name"])
+  let originalExtension = fileInfo["from_extension"]
+  let possibleExtensions = convertableTypes[originalExtension]
+  let extension = possibleExtensions.find(
+    (item) => item === fileInfo["to_extension"]
+  )
+  return `${originalName}.${extension}`
+}
+
 const updateFileInfo = (fileInfo) => {
   tbody.classList.remove("hidden")
 
-  console.log(fileInfo)
-  let name = fileInfo.file_name
-  name = name.replace(`${fileInfo.from_extension}`, `${fileInfo.to_extension}`)
-  fileName.innerText = name
+  fileName.innerText = generateFilename(fileInfo)
 }
 
 const showDownloadLinks = (convertedFile) => {
@@ -95,7 +110,7 @@ const verifyToken = async () => {
 const checkAlreadyConverted = async () => {
   try {
     const req = await axe.get(`/download/${fileToken}`, {
-      responseType: "blob"
+      responseType: "blob",
     })
 
     return req.data
@@ -106,7 +121,7 @@ const checkAlreadyConverted = async () => {
 const convertFile = async () => {
   try {
     const req = await axe.get(`/convert/${fileToken}`, {
-      responseType: "blob"
+      responseType: "blob",
     })
 
     return req.data

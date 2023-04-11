@@ -110,6 +110,7 @@ const isAllowedType = (file) => {
 }
 
 const handleFilesValidation = (files) => {
+  console.log(files)
   const validFiles = [...files].filter(isValidFile)
   const allowedTypeFiles = validFiles.filter(isAllowedType)
 
@@ -125,11 +126,11 @@ const scrollOnUploadInputChange = () => {
   if (validatedFiles) {
     if (width <= 768) {
       window.scrollTo({
-        top: stepTwoBounding.top - 77 - 15 + window.scrollY
+        top: stepTwoBounding.top - 77 - 15 + window.scrollY,
       })
     } else {
       window.scrollTo({
-        top: uploaderBounding.top - 77 - 15 + window.scrollY
+        top: uploaderBounding.top - 77 - 15 + window.scrollY,
       })
     }
   }
@@ -142,7 +143,7 @@ const scrollOnUploadOptionsChange = () => {
 
   if (validatedFiles && width <= 768) {
     window.scrollTo({
-      top: stepThreeBounding.top - 77 - 15 + window.scrollY
+      top: stepThreeBounding.top - 77 - 15 + window.scrollY,
     })
   }
 }
@@ -352,9 +353,9 @@ const uploadFile = () => {
   axe
     .post("/upload", formdata, {
       headers: {
-        "Content-Type": "multipart/form-data"
+        "Content-Type": "multipart/form-data",
       },
-      onUploadProgress
+      onUploadProgress,
     })
     .then((res) => {
       if (res.status === 200) {
