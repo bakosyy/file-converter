@@ -1,6 +1,7 @@
 import "../css/style.css"
 import "../js/collapsible"
-import axios from "axios"
+import axe from "../js/axiosConfig"
+import convertableTypes from "../js/convertableTypes"
 
 const tbody = document.querySelector("tbody")
 const fileName = tbody.querySelector(".convert-name")
@@ -14,14 +15,10 @@ const conversions = document.querySelector("table")
 
 let fileToken = new URLSearchParams(document.location.search).get("fileToken")
 
-const axe = axios.create({
-  baseURL: "https://converter.bakyt.space/api",
-  timeout: 10000
-})
-
 const updateFileInfo = (fileInfo) => {
   tbody.classList.remove("hidden")
 
+  console.log(fileInfo)
   let name = fileInfo.file_name
   name = name.replace(`${fileInfo.from_extension}`, `${fileInfo.to_extension}`)
   fileName.innerText = name
@@ -129,8 +126,9 @@ const makeRequests = async () => {
     if (convertedFile) {
       showDownloadLinks(convertedFile)
       showFileSuccessInfo()
-    } else {
-      // If File is not converted yet
+    }
+    // If File is not converted yet
+    else {
       showConvertSpinner()
 
       const convertedFile = await convertFile()
@@ -140,7 +138,9 @@ const makeRequests = async () => {
         showFileSuccessInfo()
       }
     }
-  } else {
+  }
+  // If token is invalid
+  else {
     showFileNotFoundInfo()
   }
 }

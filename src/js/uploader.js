@@ -1,430 +1,407 @@
-import axios from "axios"
+import axe from "./axiosConfig"
+import convertableTypes from "./convertableTypes"
 
-const init = () => {
-  /* Selectors */
-  const dropzoneWrapper = document.querySelector(".dropzoneWrapper")
-  const uploadBlock = document.querySelector(".uploader")
-  const uploadInput = document.querySelector(".uploadInput")
-  const uploadOptions = document.querySelector(".uploadOptions")
-  const triggerBtn = document.querySelector(".uploadInputTrigger")
-  const convertBtn = document.querySelector("button.convert")
-  const stepOne = document.getElementById("step-1")
-  const stepOnePing = stepOne.querySelector(".pingElement")
-  const stepOneRound = stepOne.querySelector(".roundElement")
-  const stepTwo = document.getElementById("step-2")
-  const stepTwoPing = stepTwo.querySelector(".pingElement")
-  const stepTwoRound = stepTwo.querySelector(".roundElement")
-  const stepThree = document.getElementById("step-3")
-  const stepThreePing = stepThree.querySelector(".pingElement")
-  const stepThreeRound = stepThree.querySelector(".roundElement")
-  const progress = document.querySelector(".progress-bar span")
-  const filelist = document.querySelector(".filelist")
-  const overallProgress = document.querySelector(".upload-progress-label")
-  const uploadProgress = document.querySelector(".upload-progress")
-  const uploadProgressBar = uploadProgress.querySelector(".progress-bar")
-  const uploadProgressBarText = uploadProgress.querySelector(".progress-value")
-  const progressInTable = document.querySelector("table .progress-value")
-  const filename = filelist.querySelector(".filename")
-  const filesize = filelist.querySelector(".filesize")
-  const deleteFileBtn = filelist.querySelector(".close")
+/* State */
+let validatedFiles = []
 
-  /* State */
-  let validatedFiles = []
-  const selectTypes = ["pdf", "mp3"]
-  const convertableTypes = {
-    "video/mp4": ["mp3"],
-    "video/quicktime": ["mp3"],
-    "video/x-msvideo": ["mp3"],
-    "video/x-ms-wmv": ["mp3"],
-    "application/msword": ["pdf"],
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
-      "pdf"
-    ]
-  }
+/* Selectors */
+const dropzoneWrapper = document.querySelector(".dropzoneWrapper")
+const uploadBlock = document.querySelector(".uploader")
+const uploadInput = document.querySelector(".uploadInput")
+const uploadOptions = document.querySelector(".uploadOptions")
+const triggerBtn = document.querySelector(".uploadInputTrigger")
+const convertBtn = document.querySelector("button.convert")
+const stepOne = document.getElementById("step-1")
+const stepOnePing = stepOne.querySelector(".pingElement")
+const stepOneRound = stepOne.querySelector(".roundElement")
+const stepTwo = document.getElementById("step-2")
+const stepTwoPing = stepTwo.querySelector(".pingElement")
+const stepTwoRound = stepTwo.querySelector(".roundElement")
+const stepThree = document.getElementById("step-3")
+const stepThreePing = stepThree.querySelector(".pingElement")
+const stepThreeRound = stepThree.querySelector(".roundElement")
+const progress = document.querySelector(".progress-bar span")
+const filelist = document.querySelector(".filelist")
+const overallProgress = document.querySelector(".upload-progress-label")
+const uploadProgress = document.querySelector(".upload-progress")
+const uploadProgressBar = uploadProgress.querySelector(".progress-bar")
+const uploadProgressBarText = uploadProgress.querySelector(".progress-value")
+const progressInTable = document.querySelector("table .progress-value")
+const filename = filelist.querySelector(".filename")
+const filesize = filelist.querySelector(".filesize")
+const deleteFileBtn = filelist.querySelector(".close")
 
-  /* Helper functions */
-  const capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1)
-  }
+/* Helper functions */
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
 
-  /* Listeners */
-  const onUploadInputChange = (e) => {
-    let newFile = e.target.files
+/* Listeners */
+const onUploadInputChange = (e) => {
+  let newFile = e.target.files
 
-    if (newFile.length) {
-      resetAllSteps()
-      validatedFiles = handleFilesValidation(e.target.files)
+  if (newFile.length) {
+    resetAllSteps()
+    validatedFiles = handleFilesValidation(e.target.files)
 
-      if (validatedFiles.length === 0) {
-        return alert(
-          "Make sure the file is not empty. Allowed formats are: .doc, .docx, .mp4, .mov, .avi, .wmv"
-        )
-      }
-      completeStepOne()
-      activateStepTwo()
-      showSelectOptions()
-      collapseFilelist()
+    if (validatedFiles.length === 0) {
+      clearFilelist()
+      return alert(
+        "Make sure the file is not empty. Allowed formats are: .doc, .docx, .mp4, .mov, .avi, .wmv"
+      )
     }
+    completeStepOne()
+    activateStepTwo()
+    showSelectOptions()
+    collapseFilelist()
   }
+}
 
-  const onUploadOptionsChange = () => {
-    if (
-      (uploadInput.files[0] || validatedFiles.length) &&
-      uploadOptions.value
-    ) {
-      completeStepTwo()
-      activateStepThree()
-    } else {
-      resetStepTwo()
-      deactivateStepThree()
+const onUploadOptionsChange = () => {
+  if ((uploadInput.files[0] || validatedFiles.length) && uploadOptions.value) {
+    completeStepTwo()
+    activateStepThree()
+  } else {
+    resetStepTwo()
+    deactivateStepThree()
+  }
+}
+
+const onClick = () => {
+  uploadInput.click()
+}
+
+const onDocumentDragenter = () => {
+  dropzoneWrapper.classList.remove("hidden")
+}
+
+const onDocumentDragover = (e) => {
+  e.preventDefault()
+}
+
+const onDocumentDrop = (e) => {
+  e.preventDefault()
+  dropzoneWrapper.classList.add("hidden")
+
+  let newFile = e.dataTransfer.files
+  if (newFile.length) {
+    resetAllSteps()
+    validatedFiles = handleFilesValidation(newFile)
+
+    if (validatedFiles.length === 0) {
+      return alert(
+        "Make sure the file is not empty. Allowed formats are: .doc, .docx"
+      )
     }
+    completeStepOne()
+    activateStepTwo()
+    collapseFilelist()
+    scrollOnUploadInputChange()
   }
+}
 
-  const onClick = () => {
-    uploadInput.click()
-  }
+/* Implementation functions */
+const isValidFile = (file) => {
+  return file.size > 0
+}
 
-  const onDocumentDragenter = () => {
-    dropzoneWrapper.classList.remove("hidden")
-  }
+const isAllowedType = (file) => {
+  return Object.prototype.hasOwnProperty.call(convertableTypes, file.type)
+}
 
-  const onDocumentDragover = (e) => {
-    e.preventDefault()
-  }
+const handleFilesValidation = (files) => {
+  const validFiles = [...files].filter(isValidFile)
+  const allowedTypeFiles = validFiles.filter(isAllowedType)
 
-  const onDocumentDrop = (e) => {
-    e.preventDefault()
-    dropzoneWrapper.classList.add("hidden")
+  return allowedTypeFiles
+}
 
-    let newFile = e.dataTransfer.files
-    if (newFile.length) {
-      resetAllSteps()
-      validatedFiles = handleFilesValidation(newFile)
+const scrollOnUploadInputChange = () => {
+  // Defining client browser width
+  let width = window.innerWidth
+  let stepTwoBounding = stepTwo.getBoundingClientRect()
+  let uploaderBounding = uploadBlock.getBoundingClientRect()
 
-      if (validatedFiles.length === 0) {
-        return alert(
-          "Make sure the file is not empty. Allowed formats are: .doc, .docx"
-        )
-      }
-      completeStepOne()
-      activateStepTwo()
-      collapseFilelist()
-      scrollOnUploadInputChange()
-    }
-  }
-
-  /* Implementation functions */
-  const isValidFile = (file) => {
-    return file.size > 0
-  }
-
-  const isAllowedType = (file) => {
-    return Object.prototype.hasOwnProperty.call(convertableTypes, file.type)
-  }
-
-  const handleFilesValidation = (files) => {
-    const validFiles = [...files].filter(isValidFile)
-    const allowedTypeFiles = validFiles.filter(isAllowedType)
-
-    return allowedTypeFiles
-  }
-
-  const scrollOnUploadInputChange = () => {
-    // Defining client browser width
-    let width = window.innerWidth
-    let stepTwoBounding = stepTwo.getBoundingClientRect()
-    let uploaderBounding = uploadBlock.getBoundingClientRect()
-
-    if (validatedFiles) {
-      if (width <= 768) {
-        window.scrollTo({
-          top: stepTwoBounding.top - 77 - 15 + window.scrollY
-        })
-      } else {
-        window.scrollTo({
-          top: uploaderBounding.top - 77 - 15 + window.scrollY
-        })
-      }
-    }
-  }
-
-  const scrollOnUploadOptionsChange = () => {
-    // Defining client browser width
-    let width = window.innerWidth
-    let stepThreeBounding = stepThree.getBoundingClientRect()
-
-    if (validatedFiles && width <= 768) {
+  if (validatedFiles) {
+    if (width <= 768) {
       window.scrollTo({
-        top: stepThreeBounding.top - 77 - 15 + window.scrollY
+        top: stepTwoBounding.top - 77 - 15 + window.scrollY
+      })
+    } else {
+      window.scrollTo({
+        top: uploaderBounding.top - 77 - 15 + window.scrollY
       })
     }
   }
+}
 
-  const showSelectOptions = () => {
-    let fileType = validatedFiles[0].type
-    let keys = Object.keys(convertableTypes)
+const scrollOnUploadOptionsChange = () => {
+  // Defining client browser width
+  let width = window.innerWidth
+  let stepThreeBounding = stepThree.getBoundingClientRect()
 
-    if (keys.includes(fileType)) {
-      let convertOptions = convertableTypes[fileType]
-      uploadOptions.length = 1
-
-      convertOptions.forEach((format) => {
-        let option = document.createElement("option")
-        option.value = format
-        option.innerText = capitalizeFirstLetter(format)
-        option.classList.add("md:text-left")
-        uploadOptions.add(option)
-      })
-    }
+  if (validatedFiles && width <= 768) {
+    window.scrollTo({
+      top: stepThreeBounding.top - 77 - 15 + window.scrollY
+    })
   }
+}
 
-  const completeStepOne = () => {
-    progress.style.width = "50%"
-    stepOnePing.classList.remove("animate-ping-slow")
-    stepOneRound.classList.add("shadow-white-rounded")
-    stepOneRound.innerText = "✓"
+const showSelectOptions = () => {
+  let fileType = validatedFiles[0].type
+  let keys = Object.keys(convertableTypes)
 
-    triggerBtn.classList.replace("bg-[#9bf759]", "bg-[#e0e0e0]")
-    triggerBtn.classList.replace("border-[#5cd510]", "border-[#cfcfcf]")
-    triggerBtn.classList.replace("hover:bg-[#5cd510]", "hover:bg-[#d1d1d1]")
-    triggerBtn.classList.replace("hover:border-[#4db70b]", "hover:bg-[#b0b0b0]")
-  }
-
-  const activateStepTwo = () => {
-    stepTwo.classList.remove("opacity-50")
-    stepTwoPing.classList.add("animate-ping-slow")
-    stepTwoRound.classList.remove("shadow-white-rounded")
-    uploadOptions.classList.replace("bg-[#e0e0e0]", "bg-white")
-  }
-
-  const completeStepTwo = () => {
-    progress.style.width = "100%"
-    stepTwoPing.classList.remove("animate-ping-slow")
-    stepTwoRound.classList.add("shadow-white-rounded")
-    stepTwoRound.innerText = "✓"
-    uploadOptions.classList.replace("bg-white", "bg-[#e0e0e0]")
-  }
-
-  const resetStepTwo = () => {
-    progress.style.width = "50%"
-    stepTwoPing.classList.add("animate-ping-slow")
-    stepTwoRound.classList.remove("shadow-white-rounded")
-    stepTwoRound.innerText = "2"
-    uploadOptions.classList.replace("bg-[#e0e0e0]", "bg-white")
-  }
-
-  const activateStepThree = () => {
-    stepThree.classList.remove("opacity-50")
-    stepThreeRound.classList.remove("shadow-white-rounded")
-    stepThreePing.classList.add("animate-ping-slow")
-
-    convertBtn.classList.replace("bg-[#e0e0e0]", "bg-[#9bf759]")
-    convertBtn.classList.replace("border-[#cfcfcf]", "border-[#5cd510]")
-    convertBtn.classList.add("hover:bg-[#5cd510]")
-    convertBtn.classList.add("hover:border-[#4db70b]")
-    convertBtn.nextElementSibling.classList.remove("hidden")
-  }
-
-  const deactivateStepThree = () => {
-    stepThree.classList.add("opacity-50")
-    stepThreeRound.classList.add("shadow-white-rounded")
-    stepThreePing.classList.remove("animate-ping-slow")
-
-    convertBtn.classList.replace("bg-[#9bf759]", "bg-[#e0e0e0]")
-    convertBtn.classList.replace("border-[#5cd510]", "border-[#cfcfcf]")
-    convertBtn.classList.remove("hover:bg-[#5cd510]")
-    convertBtn.classList.remove("hover:border-[#4db70b]")
-    convertBtn.nextElementSibling.classList.add("hidden")
-  }
-
-  const resetAllSteps = () => {
-    progress.style.width = "0%"
+  if (keys.includes(fileType)) {
+    let convertOptions = convertableTypes[fileType]
     uploadOptions.length = 1
 
-    let keys = Object.keys(convertableTypes)
-
-    // if (keys.includes(fileType)) {
-    //   let convertOptions = convertableTypes[fileType]
-    //   uploadOptions.length = 1
-
-    //   convertOptions.forEach((format) => {
-    //     let option = document.createElement("option")
-    //     option.value = format
-    //     option.innerText = capitalizeFirstLetter(format)
-    //     option.classList.add("md:text-left")
-    //     uploadOptions.add(option)
-    //   })
-    // }
-
-    keys.forEach((format) => {
+    convertOptions.forEach((format) => {
       let option = document.createElement("option")
       option.value = format
       option.innerText = capitalizeFirstLetter(format)
       option.classList.add("md:text-left")
       uploadOptions.add(option)
     })
+  }
+}
 
-    stepOnePing.classList.add("animate-ping-slow")
-    stepOneRound.classList.remove("shadow-white-rounded")
-    stepOneRound.innerText = 1
-    stepTwo.classList.add("opacity-50")
-    stepTwoPing.classList.remove("animate-ping-slow")
-    stepTwoRound.classList.add("shadow-white-rounded")
-    stepTwoRound.innerText = 2
-    stepThree.classList.add("opacity-50")
-    stepThreeRound.classList.add("shadow-white-rounded")
-    stepThreePing.classList.remove("animate-ping-slow")
+const completeStepOne = () => {
+  progress.style.width = "50%"
+  stepOnePing.classList.remove("animate-ping-slow")
+  stepOneRound.classList.add("shadow-white-rounded")
+  stepOneRound.innerText = "✓"
 
-    triggerBtn.classList.replace("bg-[#e0e0e0]", "bg-[#9bf759]")
-    triggerBtn.classList.replace("border-[#cfcfcf]", "border-[#5cd510]")
-    triggerBtn.classList.replace("hover:bg-[#d1d1d1]", "hover:bg-[#5cd510]")
-    triggerBtn.classList.replace("hover:bg-[#b0b0b0]", "hover:border-[#4db70b]")
-    uploadOptions.classList.replace("bg-white", "bg-[#e0e0e0]")
+  triggerBtn.classList.replace("bg-[#9bf759]", "bg-[#e0e0e0]")
+  triggerBtn.classList.replace("border-[#5cd510]", "border-[#cfcfcf]")
+  triggerBtn.classList.replace("hover:bg-[#5cd510]", "hover:bg-[#d1d1d1]")
+  triggerBtn.classList.replace("hover:border-[#4db70b]", "hover:bg-[#b0b0b0]")
+}
 
-    convertBtn.classList.replace("bg-[#9bf759]", "bg-[#e0e0e0]")
-    convertBtn.classList.replace("border-[#5cd510]", "border-[#cfcfcf]")
-    convertBtn.classList.remove("hover:bg-[#5cd510]")
-    convertBtn.classList.remove("hover:border-[#4db70b]")
-    convertBtn.nextElementSibling.classList.add("hidden")
+const activateStepTwo = () => {
+  stepTwo.classList.remove("opacity-50")
+  stepTwoPing.classList.add("animate-ping-slow")
+  stepTwoRound.classList.remove("shadow-white-rounded")
+  uploadOptions.classList.replace("bg-[#e0e0e0]", "bg-white")
+}
+
+const completeStepTwo = () => {
+  progress.style.width = "100%"
+  stepTwoPing.classList.remove("animate-ping-slow")
+  stepTwoRound.classList.add("shadow-white-rounded")
+  stepTwoRound.innerText = "✓"
+  uploadOptions.classList.replace("bg-white", "bg-[#e0e0e0]")
+}
+
+const resetStepTwo = () => {
+  progress.style.width = "50%"
+  stepTwoPing.classList.add("animate-ping-slow")
+  stepTwoRound.classList.remove("shadow-white-rounded")
+  stepTwoRound.innerText = "2"
+  uploadOptions.classList.replace("bg-[#e0e0e0]", "bg-white")
+}
+
+const activateStepThree = () => {
+  stepThree.classList.remove("opacity-50")
+  stepThreeRound.classList.remove("shadow-white-rounded")
+  stepThreePing.classList.add("animate-ping-slow")
+
+  convertBtn.classList.replace("bg-[#e0e0e0]", "bg-[#9bf759]")
+  convertBtn.classList.replace("border-[#cfcfcf]", "border-[#5cd510]")
+  convertBtn.classList.add("hover:bg-[#5cd510]")
+  convertBtn.classList.add("hover:border-[#4db70b]")
+  convertBtn.nextElementSibling.classList.remove("hidden")
+}
+
+const deactivateStepThree = () => {
+  stepThree.classList.add("opacity-50")
+  stepThreeRound.classList.add("shadow-white-rounded")
+  stepThreePing.classList.remove("animate-ping-slow")
+
+  convertBtn.classList.replace("bg-[#9bf759]", "bg-[#e0e0e0]")
+  convertBtn.classList.replace("border-[#5cd510]", "border-[#cfcfcf]")
+  convertBtn.classList.remove("hover:bg-[#5cd510]")
+  convertBtn.classList.remove("hover:border-[#4db70b]")
+  convertBtn.nextElementSibling.classList.add("hidden")
+}
+
+const resetAllSteps = () => {
+  progress.style.width = "0%"
+  uploadOptions.length = 1
+
+  const values = Object.values(convertableTypes)
+  const options = values.map((arr) => arr.join())
+  const uniqueOptions = options.filter(
+    (value, index, self) => self.indexOf(value) === index
+  )
+
+  uniqueOptions.forEach((key) => {
+    const option = document.createElement("option")
+    option.value = key
+    option.innerText = capitalizeFirstLetter(key)
+    option.classList.add("md:text-left")
+    uploadOptions.add(option)
+  })
+
+  stepOnePing.classList.add("animate-ping-slow")
+  stepOneRound.classList.remove("shadow-white-rounded")
+  stepOneRound.innerText = 1
+  stepTwo.classList.add("opacity-50")
+  stepTwoPing.classList.remove("animate-ping-slow")
+  stepTwoRound.classList.add("shadow-white-rounded")
+  stepTwoRound.innerText = 2
+  stepThree.classList.add("opacity-50")
+  stepThreeRound.classList.add("shadow-white-rounded")
+  stepThreePing.classList.remove("animate-ping-slow")
+
+  triggerBtn.classList.replace("bg-[#e0e0e0]", "bg-[#9bf759]")
+  triggerBtn.classList.replace("border-[#cfcfcf]", "border-[#5cd510]")
+  triggerBtn.classList.replace("hover:bg-[#d1d1d1]", "hover:bg-[#5cd510]")
+  triggerBtn.classList.replace("hover:bg-[#b0b0b0]", "hover:border-[#4db70b]")
+  uploadOptions.classList.replace("bg-white", "bg-[#e0e0e0]")
+
+  convertBtn.classList.replace("bg-[#9bf759]", "bg-[#e0e0e0]")
+  convertBtn.classList.replace("border-[#5cd510]", "border-[#cfcfcf]")
+  convertBtn.classList.remove("hover:bg-[#5cd510]")
+  convertBtn.classList.remove("hover:border-[#4db70b]")
+  convertBtn.nextElementSibling.classList.add("hidden")
+}
+
+const showFileInformation = ({ name, size }) => {
+  let sizeValue
+  let sizeInBytes = size
+  let sizeInKB = (sizeInBytes / 1000).toFixed(2)
+  let sizeInMB = (sizeInBytes / 1000 / 1000).toFixed(2)
+
+  if (sizeInMB >= 1) {
+    sizeValue = sizeInMB + " MB"
+  } else if (sizeInKB >= 1) {
+    sizeValue = sizeInKB + " KB"
+  } else {
+    sizeValue = sizeInBytes + " B"
   }
 
-  const showFileInformation = ({ name, size }) => {
-    let sizeValue
-    let sizeInBytes = size
-    let sizeInKB = (sizeInBytes / 1000).toFixed(2)
-    let sizeInMB = (sizeInBytes / 1000 / 1000).toFixed(2)
+  filename.innerText = name
+  filesize.innerText = sizeValue
+}
 
-    if (sizeInMB >= 1) {
-      sizeValue = sizeInMB + " MB"
-    } else if (sizeInKB >= 1) {
-      sizeValue = sizeInKB + " KB"
-    } else {
-      sizeValue = sizeInBytes + " B"
+const collapseFilelist = () => {
+  filelist.style.maxHeight = filelist.scrollHeight + "px"
+
+  showFileInformation(validatedFiles[0])
+}
+
+const clearFilelist = () => {
+  filelist.style.maxHeight = 0
+
+  validatedFiles = []
+
+  uploadInput.value = ""
+
+  resetAllSteps()
+}
+
+const verifyFile = () => {
+  if (validatedFiles.length === 0) {
+    alert("Please select your files to convert (in Step 1).")
+  } else if (validatedFiles && !uploadOptions.value) {
+    alert("Please choose the format to convert your files to (in Step 2).")
+  } else {
+    return true
+  }
+}
+
+const changeStepButtonsStyles = () => {
+  triggerBtn.classList.add("opacity-50")
+  uploadOptions.classList.add("opacity-50")
+  convertBtn.parentElement.classList.add("opacity-50")
+
+  stepThreePing.classList.remove("animate-ping-slow")
+  stepThreeRound.classList.add("shadow-white-rounded")
+  stepThreeRound.innerText = "✓"
+}
+
+const makeStepButtonsDisabled = () => {
+  uploadInput.setAttribute("disabled", "")
+  uploadOptions.setAttribute("disabled", "")
+  convertBtn.removeEventListener("click", handleUploadFile)
+}
+
+const makeDeleteFileBtnUnclickable = () => {
+  deleteFileBtn.removeEventListener("click", clearFilelist)
+  deleteFileBtn.style.cursor = "auto"
+}
+
+const uploadFile = () => {
+  const formdata = new FormData()
+  formdata.append("uploadFile", validatedFiles[0])
+  formdata.append("conversionType", uploadOptions.value)
+
+  const onUploadProgress = (e) => {
+    let progress = Math.round(e.progress * 100)
+    if (progress > 0) {
+      overallProgress.classList.replace("md:hidden", "md:block")
+      uploadProgress.classList.remove("hidden")
+      uploadProgressBar.style.width = `${progress}%`
+      uploadProgressBarText.innerText = `${progress}%`
+      progress !== 100
+        ? (progressInTable.innerText = `${progress}% uploaded`)
+        : (progressInTable.innerText = `Converting`)
     }
-
-    filename.innerText = name
-    filesize.innerText = sizeValue
   }
 
-  const collapseFilelist = () => {
-    filelist.style.maxHeight = filelist.scrollHeight + "px"
+  axe
+    .post("/upload", formdata, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      },
+      onUploadProgress
+    })
+    .then((res) => {
+      if (res.status === 200) {
+        let fileToken = res.data.file_token
 
-    showFileInformation(validatedFiles[0])
-  }
-
-  const clearFilelist = () => {
-    filelist.style.maxHeight = 0
-
-    validatedFiles = []
-
-    uploadInput.value = ""
-
-    resetAllSteps()
-  }
-
-  const verifyFile = () => {
-    if (validatedFiles.length === 0) {
-      alert("Please select your files to convert (in Step 1).")
-    } else if (validatedFiles && !uploadOptions.value) {
-      alert("Please choose the format to convert your files to (in Step 2).")
-    } else {
-      return true
-    }
-  }
-
-  const changeStepButtonsStyles = () => {
-    triggerBtn.classList.add("opacity-50")
-    uploadOptions.classList.add("opacity-50")
-    convertBtn.parentElement.classList.add("opacity-50")
-
-    stepThreePing.classList.remove("animate-ping-slow")
-    stepThreeRound.classList.add("shadow-white-rounded")
-    stepThreeRound.innerText = "✓"
-  }
-
-  const makeStepButtonsDisabled = () => {
-    uploadInput.setAttribute("disabled", "")
-    uploadOptions.setAttribute("disabled", "")
-    convertBtn.removeEventListener("click", handleUploadFile)
-  }
-
-  const makeDeleteFileBtnUnclickable = () => {
-    deleteFileBtn.removeEventListener("click", clearFilelist)
-    deleteFileBtn.style.cursor = "auto"
-  }
-
-  const uploadFile = () => {
-    const formdata = new FormData()
-    formdata.append("uploadFile", validatedFiles[0])
-    formdata.append("conversionType", uploadOptions.value)
-
-    const onUploadProgress = (e) => {
-      let progress = Math.round(e.progress * 100)
-      if (progress > 0) {
-        overallProgress.classList.replace("md:hidden", "md:block")
-        uploadProgress.classList.remove("hidden")
-        uploadProgressBar.style.width = `${progress}%`
-        uploadProgressBarText.innerText = `${progress}%`
-        progress !== 100
-          ? (progressInTable.innerText = `${progress}% uploaded`)
-          : (progressInTable.innerText = `Converting`)
+        uploadInput.value = ""
+        location.href = `${location.origin}/convert/?fileToken=${fileToken}`
       }
-    }
+    })
+    .catch((err) => {
+      progressInTable.innerText = "Error occured"
+      setTimeout(() => {
+        alert("Service unavailable, try again later.")
+        location.reload()
+      }, 500)
+    })
+}
 
-    axios
-      .post("https://converter.bakyt.space/api/upload", formdata, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        },
-        onUploadProgress
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          let fileToken = res.data.file_token
-
-          uploadInput.value = ""
-          location.href = `${location.origin}/convert/?fileToken=${fileToken}`
-        }
-      })
-      .catch((err) => {
-        progressInTable.innerText = "Error occured"
-        setTimeout(() => {
-          alert("Service unavailable, try again later.")
-          location.reload()
-        }, 500)
-      })
+const handleUploadFile = () => {
+  if (verifyFile()) {
+    makeStepButtonsDisabled()
+    changeStepButtonsStyles()
+    makeDeleteFileBtnUnclickable()
+    uploadFile()
   }
+}
 
-  const handleUploadFile = () => {
-    if (verifyFile()) {
-      makeStepButtonsDisabled()
-      changeStepButtonsStyles()
-      makeDeleteFileBtnUnclickable()
-      uploadFile()
-    }
-  }
+/* Init */
 
-  /* Events */
-  triggerBtn.addEventListener("click", onClick)
-  uploadInput.addEventListener("change", onUploadInputChange)
-  uploadInput.addEventListener("change", scrollOnUploadInputChange)
-  uploadOptions.addEventListener("change", onUploadOptionsChange)
-  uploadOptions.addEventListener("change", scrollOnUploadOptionsChange)
-  deleteFileBtn.addEventListener("click", clearFilelist)
-  convertBtn.addEventListener("click", handleUploadFile)
+/* Events */
+triggerBtn.addEventListener("click", onClick)
+uploadInput.addEventListener("change", onUploadInputChange)
+uploadInput.addEventListener("change", scrollOnUploadInputChange)
+uploadOptions.addEventListener("change", onUploadOptionsChange)
+uploadOptions.addEventListener("change", scrollOnUploadOptionsChange)
+deleteFileBtn.addEventListener("click", clearFilelist)
+convertBtn.addEventListener("click", handleUploadFile)
 
-  /* Drag & Drop events */
+/* Drag & Drop events */
+if ("draggable" in document.createElement("div")) {
   document.addEventListener("dragenter", onDocumentDragenter)
   document.addEventListener("dragover", onDocumentDragover)
   document.addEventListener("drop", onDocumentDrop)
 }
 
-if ("draggable" in document.createElement("div")) {
-  init()
-}
-
-// Scroll top on page load
-// ;(() => {
-//   document.documentElement.scrollTop = 0
-//   document.body.scrollTop = 0
-// })()
+/* Scroll to top on first page load */
+;(function () {
+  document.documentElement.scrollTop = 0
+  document.body.scrollTop = 0
+})()
