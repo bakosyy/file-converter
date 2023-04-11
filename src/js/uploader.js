@@ -110,7 +110,6 @@ const isAllowedType = (file) => {
 }
 
 const handleFilesValidation = (files) => {
-  console.log(files)
   const validFiles = [...files].filter(isValidFile)
   const allowedTypeFiles = validFiles.filter(isAllowedType)
 
