@@ -13,6 +13,7 @@ const successMessage = conversionIntro.querySelector(".success-message")
 const processingMessage = conversionIntro.querySelector(".processing-message")
 const conversions = document.querySelector("table")
 
+let fileInfo
 let fileToken = new URLSearchParams(document.location.search).get("fileToken")
 
 const removeExtension = (filename) => {
@@ -83,9 +84,20 @@ const showCreditsEndedInfo = () => {
   conversionHeading.innerText = "Website credits ended"
   processingMessage.classList.add("text-[#3B3B3B]")
   processingMessage.innerHTML = `
-    <p>Sorry, looks like website conversion credits ended.</p>
-    <p>Please contact the website creator to update the conversion credits. </p>
+    <p>Sorry, looks like pdf conversion credits ended.</p>
+    <p>Try to convert video files to mp3 instead or contact the website creator to update the conversion credits.</p>
     <p>If you need further help please contact <a href="mailto:support@converter.info" class="text-[#2487EB] hover:text-[#1061b1] hover:underline">our support team</a>.</p>
+  `
+  conversions.classList.add("hidden")
+}
+
+const showServerErrorInfo = () => {
+  conversionHeading.innerText = "Services unavailable"
+  processingMessage.classList.add("text-[#3B3B3B]")
+  processingMessage.innerHTML = `
+    <p>We apologize for the inconvenience.</p>
+    <p>Our file conversion services are currently unavailable.</p>
+    <p>Please try again later or contact <a href="mailto:support@converter.info" class="text-[#2487EB] hover:text-[#1061b1] hover:underline">our support team</a> for further assistance.</p>
   `
   conversions.classList.add("hidden")
 }
@@ -98,7 +110,9 @@ const hideConvertSpinner = () => {
   convertingSpinner.classList.replace("inline-flex", "hidden")
 }
 
-/* Request: Verifying if token is correct */
+/** Request: Verifying if token is correct
+ *  Returns file information
+ */
 const verifyToken = async () => {
   try {
     const req = await axe.get(`/verify/${fileToken}`)
@@ -126,13 +140,15 @@ const convertFile = async () => {
 
     return req.data
   } catch (err) {
-    showCreditsEndedInfo()
+    fileInfo["to_extension"] === "pdf"
+      ? showCreditsEndedInfo()
+      : showServerErrorInfo()
   }
 }
 
 /* Implementation */
 const makeRequests = async () => {
-  const fileInfo = await verifyToken()
+  fileInfo = await verifyToken()
 
   if (fileInfo) {
     updateFileInfo(fileInfo)
