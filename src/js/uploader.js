@@ -38,22 +38,19 @@ const capitalizeFirstLetter = (string) => {
 
 /* Listeners */
 const onUploadInputChange = (e) => {
-  let newFile = e.target.files
+  let files = e.target.files
 
-  if (newFile.length) {
-    resetAllSteps()
-    validatedFiles = handleFilesValidation(e.target.files)
+  resetAllSteps()
 
-    if (validatedFiles.length === 0) {
-      clearFilelist()
-      return alert(
-        "Make sure the file is not empty. Allowed formats are: .doc, .docx, .mp4, .mov, .avi, .wmv"
-      )
-    }
+  if (validateFiles(files) === "validated") {
+    validatedFiles = files
+
     completeStepOne()
     activateStepTwo()
     showSelectOptions()
     collapseFilelist()
+  } else {
+    clearFilelist()
   }
 }
 
@@ -86,7 +83,7 @@ const onDocumentDrop = (e) => {
   let newFile = e.dataTransfer.files
   if (newFile.length) {
     resetAllSteps()
-    validatedFiles = handleFilesValidation(newFile)
+    validatedFiles = validateFiles(newFile)
 
     if (validatedFiles.length === 0) {
       return alert(
@@ -98,22 +95,6 @@ const onDocumentDrop = (e) => {
     collapseFilelist()
     scrollOnUploadInputChange()
   }
-}
-
-/* Implementation functions */
-const isValidFile = (file) => {
-  return file.size > 0
-}
-
-const isAllowedType = (file) => {
-  return Object.prototype.hasOwnProperty.call(convertableTypes, file.type)
-}
-
-const handleFilesValidation = (files) => {
-  const validFiles = [...files].filter(isValidFile)
-  const allowedTypeFiles = validFiles.filter(isAllowedType)
-
-  return allowedTypeFiles
 }
 
 const scrollOnUploadInputChange = () => {
@@ -145,6 +126,39 @@ const scrollOnUploadOptionsChange = () => {
       top: stepThreeBounding.top - 77 - 15 + window.scrollY,
     })
   }
+}
+
+/* Implementation functions */
+const hasEmptyFiles = (files) => {
+  return files.filter((file) => file.size <= 0).length
+}
+
+const unsupportedFileExtensions = (files) => {
+  return files.filter((file) => !convertableTypes.hasOwnProperty(file.type))
+    .length
+}
+
+const checkFilesTooLarge = (files) => {
+  // Max file size is 50Mb
+  return files.filter((file) => file.size > 50 * 1024 * 1024).length
+}
+
+const validateFiles = (files) => {
+  let formattedFiles = [...files]
+
+  if (hasEmptyFiles(formattedFiles)) {
+    return alert("Your have an empty file")
+  }
+
+  if (unsupportedFileExtensions(formattedFiles)) {
+    return alert("Allowed formats are: .doc, .docx, .mp4, .mov, .avi, .wmv")
+  }
+
+  if (checkFilesTooLarge(formattedFiles)) {
+    return alert("Maximum file size is 50Mb.")
+  }
+
+  return "validated"
 }
 
 const showSelectOptions = () => {
@@ -401,7 +415,7 @@ if ("draggable" in document.createElement("div")) {
 }
 
 /* Scroll to top on first page load */
-;(function () {
-  document.documentElement.scrollTop = 0
-  document.body.scrollTop = 0
-})()
+// ;(function () {
+//   document.documentElement.scrollTop = 0
+//   document.body.scrollTop = 0
+// })()
