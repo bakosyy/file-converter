@@ -152,15 +152,17 @@ const makeRequests = async () => {
 
   if (fileInfo) {
     updateFileInfo(fileInfo)
+    showConvertSpinner()
 
     const convertedFile = await checkAlreadyConverted()
     if (convertedFile) {
+      hideConvertSpinner()
       showDownloadLinks(convertedFile)
       showFileSuccessInfo()
     }
     // If File is not converted yet
     else {
-      showConvertSpinner()
+      // showConvertSpinner()
 
       const convertedFile = await convertFile()
       if (convertedFile) {

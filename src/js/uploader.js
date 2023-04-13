@@ -38,20 +38,7 @@ const capitalizeFirstLetter = (string) => {
 
 /* Listeners */
 const onUploadInputChange = (e) => {
-  let files = e.target.files
-
-  resetAllSteps()
-
-  if (validateFiles(files) === "validated") {
-    validatedFiles = files
-
-    completeStepOne()
-    activateStepTwo()
-    showSelectOptions()
-    collapseFilelist()
-  } else {
-    clearFilelist()
-  }
+  handleUploadFiles(e.target.files)
 }
 
 const onUploadOptionsChange = () => {
@@ -68,6 +55,15 @@ const onClick = () => {
   uploadInput.click()
 }
 
+const onSubmitButtonClick = () => {
+  if (verifyFile()) {
+    makeStepButtonsDisabled()
+    changeStepButtonsStyles()
+    makeDeleteFileBtnUnclickable()
+    uploadFile()
+  }
+}
+
 const onDocumentDragenter = () => {
   dropzoneWrapper.classList.remove("hidden")
 }
@@ -76,25 +72,16 @@ const onDocumentDragover = (e) => {
   e.preventDefault()
 }
 
+const onDropzoneDragleave = (e) => {
+  dropzoneWrapper.classList.add("hidden")
+}
+
 const onDocumentDrop = (e) => {
   e.preventDefault()
+
   dropzoneWrapper.classList.add("hidden")
 
-  let newFile = e.dataTransfer.files
-  if (newFile.length) {
-    resetAllSteps()
-    validatedFiles = validateFiles(newFile)
-
-    if (validatedFiles.length === 0) {
-      return alert(
-        "Make sure the file is not empty. Allowed formats are: .doc, .docx"
-      )
-    }
-    completeStepOne()
-    activateStepTwo()
-    collapseFilelist()
-    scrollOnUploadInputChange()
-  }
+  handleUploadFiles(e.dataTransfer.files)
 }
 
 const scrollOnUploadInputChange = () => {
@@ -129,6 +116,21 @@ const scrollOnUploadOptionsChange = () => {
 }
 
 /* Implementation functions */
+const handleUploadFiles = (files) => {
+  resetAllSteps()
+
+  if (validateFiles(files) === "validated") {
+    validatedFiles = files
+
+    completeStepOne()
+    activateStepTwo()
+    showSelectOptions()
+    collapseFilelist()
+  } else {
+    clearFilelist()
+  }
+}
+
 const hasEmptyFiles = (files) => {
   return files.filter((file) => file.size <= 0).length
 }
@@ -283,8 +285,8 @@ const resetAllSteps = () => {
 const showFileInformation = ({ name, size }) => {
   let sizeValue
   let sizeInBytes = size
-  let sizeInKB = (sizeInBytes / 1000).toFixed(2)
-  let sizeInMB = (sizeInBytes / 1000 / 1000).toFixed(2)
+  let sizeInKB = (sizeInBytes / 1024).toFixed(2)
+  let sizeInMB = (sizeInBytes / 1024 / 1024).toFixed(2)
 
   if (sizeInMB >= 1) {
     sizeValue = sizeInMB + " MB"
@@ -337,7 +339,7 @@ const changeStepButtonsStyles = () => {
 const makeStepButtonsDisabled = () => {
   uploadInput.setAttribute("disabled", "")
   uploadOptions.setAttribute("disabled", "")
-  convertBtn.removeEventListener("click", handleUploadFile)
+  convertBtn.removeEventListener("click", onSubmitButtonClick)
 }
 
 const makeDeleteFileBtnUnclickable = () => {
@@ -387,17 +389,7 @@ const uploadFile = () => {
     })
 }
 
-const handleUploadFile = () => {
-  if (verifyFile()) {
-    makeStepButtonsDisabled()
-    changeStepButtonsStyles()
-    makeDeleteFileBtnUnclickable()
-    uploadFile()
-  }
-}
-
-/* Init */
-
+/* Application Initialization */
 /* Events */
 triggerBtn.addEventListener("click", onClick)
 uploadInput.addEventListener("change", onUploadInputChange)
@@ -405,13 +397,15 @@ uploadInput.addEventListener("change", scrollOnUploadInputChange)
 uploadOptions.addEventListener("change", onUploadOptionsChange)
 uploadOptions.addEventListener("change", scrollOnUploadOptionsChange)
 deleteFileBtn.addEventListener("click", clearFilelist)
-convertBtn.addEventListener("click", handleUploadFile)
+convertBtn.addEventListener("click", onSubmitButtonClick)
 
 /* Drag & Drop events */
 if ("draggable" in document.createElement("div")) {
   document.addEventListener("dragenter", onDocumentDragenter)
   document.addEventListener("dragover", onDocumentDragover)
+  dropzoneWrapper.addEventListener("dragleave", onDropzoneDragleave)
   document.addEventListener("drop", onDocumentDrop)
+  document.addEventListener("drop", scrollOnUploadInputChange)
 }
 
 /* Scroll to top on first page load */
