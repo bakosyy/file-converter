@@ -162,12 +162,10 @@ const makeRequests = async () => {
     }
     // If File is not converted yet
     else {
-      // showConvertSpinner()
-
       const convertedFile = await convertFile()
       if (convertedFile) {
-        showDownloadLinks(convertedFile)
         hideConvertSpinner()
+        showDownloadLinks(convertedFile)
         showFileSuccessInfo()
       }
     }
